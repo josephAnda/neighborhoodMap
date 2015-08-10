@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Neighborhood Mapper</title>
+		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/style.css">
+	</head>
+	<body>
+		<div class="row">
+			<div class="col-md-3"></div>
+			<div class="col-md-6"><h2>Neighborhood Mapper</h2></div>
+			<div class="col-md-3"></div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				<form data-bind="submit: getMap">
+					Address:  <input type="text" name="address" data-bind="value: address">
+					<input type="submit" value="Search">
+				</form>
+			</div>
+			<div class="col-md-6"></div>
+		<div>
+		<div class="row" id="map-row">
+
+			<div class="col-md-12" id="map-canvas" style="width: 100%; height: 100%"></div>
+		</div>
+		<script src="libraries/jquery.js"></script>	
+		<script src="libraries/knockout-3.3.0 .js"></script>
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDMBshK9P3JbIcC-prwrJoeV36aYqVd4zU" type="text/javascript"></script>
+		<script src="javascript/app.js"></script>
+	<body>
+</html>

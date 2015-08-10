@@ -6,9 +6,10 @@ body {
 	padding: 0 
 }
 
-/*#map-canvas { height: 400px; }*/
 
-#map-row { height: 400px; }
+#map-row { 
+	height: 400px; 
+}
 
 h2 {
 	text-align: center;

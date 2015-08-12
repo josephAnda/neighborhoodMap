@@ -1,4 +1,6 @@
-html { height: 100% }
+html { 
+	height: 100%; 
+}
 
 body { 
 	height: 100%; 
@@ -6,11 +8,25 @@ body {
 	padding: 0 
 }
 
-
 #map-row { 
 	height: 400px; 
+	padding-top: 100px;
+	padding-left: 20px;
 }
 
 h2 {
 	text-align: center;
+}
+
+#address, #place {
+	display: block;
+}
+
+.container {
+    width: 500px;
+    clear: both;
+}
+.container input.field {
+    width: 80%;
+    clear: both;
 }

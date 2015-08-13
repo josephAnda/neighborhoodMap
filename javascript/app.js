@@ -37,9 +37,9 @@
 			} else {
 				$.getJSON("https://api.foursquare.com/v2/venues/search?client_id=DFMQLSBHUH2LQAQ3DQYSNSAR3TYCNHQJ3DEIHVKSMK0KBGPJ
 				&client_secret=3J5U50Y3HOGLN3DJDHROLSZB4FBHEZCNW1P3VWHANK4KRNYO&v=20130815&ll=40.7,-74&query=" + self.place(), 
-				function( data )) {
+				function( data ) {
 					console.log( data );
-				};   //  Insert URL here for Foursquare AJAX request*/
+				});   //  Insert URL here for Foursquare AJAX request*/
 			return false   //  DON'T refresh the page!!!
 		};
 

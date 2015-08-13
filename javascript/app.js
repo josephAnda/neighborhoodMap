@@ -16,10 +16,18 @@
 	var $mapCanvas = $("#map-canvas")[0];  //  Reference to map-canvas div
 	var lat = 37.56; //  Lattitude for San Mateo
 	var lng = -122.32;
+
+	function location(name, lat, lng, phone, url) {
+		this.name = name;
+		this.lat = lat;
+		this.lng = lng;
+		this.phone = phone;
+		this.url = url;
+	}
 	function initializeMap() {
 		var mapOptions = {
   				center: new google.maps.LatLng(lat, lng),
-  				zoom: 7
+  				zoom: 15
 			};
 		var map = new google.maps.Map( $mapCanvas, mapOptions);
 		
@@ -28,22 +36,29 @@
 	//  Holds ViewModel functionality
 	function neighborhoodViewModel() {
 		var self = this;
-		this.address = ko.observable();  //  Bound to the address that the user inputs
+		//this.address = ko.observable();  //  Bound to the address that the user inputs
 		this.place = ko.observable();  //  Bound to the place that the user searches for 
 		this.markers = ko.observableArray();  //  Tracks the markers 
 
 		this.getPlace = function() { 
-			if (!self.address()) { 
-				alert("Please search an address to enable 'Places' search") 
-			} else {
-				$.getJSON("https://api.foursquare.com/v2/venues/search?client_id=DFMQLSBHUH2LQAQ3DQYSNSAR3TYCNHQJ3DEIHVKSMK0KBGPJ&client_secret=3J5U50Y3HOGLN3DJDHROLSZB4FBHEZCNW1P3VWHANK4KRNYO&v=20130815&ll=37.56,-122.32&query=" + self.place(), 
-				function( data ) {
-					console.log( data );
-				})
-			};   //  Insert URL here for Foursquare AJAX request*/
+			$.getJSON("https://api.foursquare.com/v2/venues/search?client_id=DFMQLSBHUH2LQAQ3DQYSNSAR3TYCNHQJ3DEIHVKSMK0KBGPJ&client_secret=3J5U50Y3HOGLN3DJDHROLSZB4FBHEZCNW1P3VWHANK4KRNYO&v=20130815&ll=" + 
+			lat + "," + lng + "&query=" + self.place(), function( data ) {
+				console.log( data );
+			});
 			return false   //  DON'T refresh the page!!!
 		};
-
+		function addMarker(location, map) {
+  		// Add the marker at the clicked location, and add the next-available label
+  		// from the array of alphabetical characters.
+  			var marker = new google.maps.Marker({
+    			position: location,
+    			label: markerLabels[labelIndex++ % markerLabels.length],
+    			map: map
+  			});
+  			self.markers.push(marker);
+  			console.log(self.markers());
+		};
+		/*
         this.getMap = function() {
         	if (self.markers != 0) { self.markers.removeAll() };  //  Resets marker list when the page loads
             $.get( "https://maps.googleapis.com/maps/api/geocode/json?address=" + self.address() + "&key=AIzaSyDMBshK9P3JbIcC-prwrJoeV36aYqVd4zU&sensor=true", 
@@ -66,20 +81,12 @@
 				var markerLabels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 				var labelIndex = 0;
 
-		  		function addMarker(location, map) {
-		  		// Add the marker at the clicked location, and add the next-available label
-		  		// from the array of alphabetical characters.
-		  			var marker = new google.maps.Marker({
-		    			position: location,
-		    			label: markerLabels[labelIndex++ % markerLabels.length],
-		    			map: map
-		  			});
-		  			self.markers.push(marker);
-		  			console.log(self.markers());
-				}
+		  		
 			});
 
+
         }
+        */
         
     };
 

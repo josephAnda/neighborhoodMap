@@ -9,9 +9,13 @@ body {
 }
 
 #map-row { 
-	height: 400px; 
+	height: 700px; 
 	padding-top: 100px;
 	padding-left: 20px;
+}
+
+#map-canvas {
+	z-index: -1;
 }
 
 h2 {

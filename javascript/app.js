@@ -14,10 +14,11 @@
 
 	//  Loads initial map
 	var $mapCanvas = $("#map-canvas")[0];  //  Reference to map-canvas div
-
+	var lat = 37.56; //  Lattitude for San Mateo
+	var lng = -122.32;
 	function initializeMap() {
 		var mapOptions = {
-  				center: new google.maps.LatLng(37.56, -122.32),
+  				center: new google.maps.LatLng(lat, lng),
   				zoom: 7
 			};
 		var map = new google.maps.Map( $mapCanvas, mapOptions);
@@ -35,7 +36,7 @@
 			if (!self.address()) { 
 				alert("Please search an address to enable 'Places' search") 
 			} else {
-				$.getJSON("https://api.foursquare.com/v2/venues/search?client_id=DFMQLSBHUH2LQAQ3DQYSNSAR3TYCNHQJ3DEIHVKSMK0KBGPJ&client_secret=3J5U50Y3HOGLN3DJDHROLSZB4FBHEZCNW1P3VWHANK4KRNYO&v=20130815&ll=40.7,-74&query=" + self.place(), 
+				$.getJSON("https://api.foursquare.com/v2/venues/search?client_id=DFMQLSBHUH2LQAQ3DQYSNSAR3TYCNHQJ3DEIHVKSMK0KBGPJ&client_secret=3J5U50Y3HOGLN3DJDHROLSZB4FBHEZCNW1P3VWHANK4KRNYO&v=20130815&ll=37.56,-122.32&query=" + self.place(), 
 				function( data ) {
 					console.log( data );
 				})

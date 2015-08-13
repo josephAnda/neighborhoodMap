@@ -1,5 +1,6 @@
 //  TODO:
 //  [  ]  Ensure appropriate separation of concerns via MVVM paradigm
+//  [  ]  Restructure code to initialize markers, fix the locale in one position
 //  [  ]  Add map markers
 //  [  ]  Add searching and filtering functionality (what does this mean???)
 //  [  ]  Implement a list view of identified locations
@@ -33,8 +34,12 @@
 		this.getPlace = function() { 
 			if (!self.address()) { 
 				alert("Please search an address to enable 'Places' search") 
-			} /*else {
-				$.get();   //  Insert URL here for Foursquare AJAX request*/
+			} else {
+				$.getJSON("https://api.foursquare.com/v2/venues/search?client_id=DFMQLSBHUH2LQAQ3DQYSNSAR3TYCNHQJ3DEIHVKSMK0KBGPJ
+				&client_secret=3J5U50Y3HOGLN3DJDHROLSZB4FBHEZCNW1P3VWHANK4KRNYO&v=20130815&ll=40.7,-74&query=" + self.place(), 
+				function( data )) {
+					console.log( data );
+				};   //  Insert URL here for Foursquare AJAX request*/
 			return false   //  DON'T refresh the page!!!
 		};
 

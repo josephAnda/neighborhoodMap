@@ -22,7 +22,16 @@
 					
 				</form>
 			</div>
-			<div class="col-md-6"></div>
+			<div class="col-md-6">
+				<table>
+					<tbody data-bind="foreach: results">
+						<tr>
+							<td data-bind="text: name"></td>
+							<td data-bind="text: phone"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		<div>
 		<div class="row" id="map-row">
 
@@ -31,6 +40,7 @@
 		<script src="libraries/jquery.js"></script>	
 		<script src="libraries/knockout-3.3.0 .js"></script>
 		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDMBshK9P3JbIcC-prwrJoeV36aYqVd4zU" type="text/javascript"></script>
+		<script src="javascript/defaults.json"></script>
 		<script src="javascript/app.js"></script>
 	<body>
 </html>

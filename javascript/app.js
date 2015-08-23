@@ -3,7 +3,7 @@
 //  [  ]  Ensure appropriate separation of concerns via MVVM paradigm
 //  [!!]  Encapsulate defaults in a model object
 //  [!!]  Add map markers
-//  [  ]  Create (5) default objects with minimum information 
+//  [!!]  Create (4) default objects with minimum information 
 //  [  ]  Add searching and filtering functionality (what does this mean???)
 //  [!!]  Implement a list view of identified locations
 //  [  ]  Wire clicking of map markers to additional via AJAX requests
@@ -29,44 +29,6 @@
 			this.phone = phone;
 			this.url = url;
 		},
-		
-		//  Default points of interest, fallbacks if AJAX request fails
-		Places: [{
-			name: "place1",
-			lat:  37.56,
-			lng:  -122.32,
-			phone:  '000-000-0000',
-			url: "http://place1.com"
-		},
-		{
-			name: "place2",
-			lat:  37,
-			lng:  -123,
-			phone:  '000-000-0000',
-			url: "http://place2.com"
-
-		},
-		{
-			name: "place3",
-			lat:  37,
-			lng:  -124,
-			phone:  '000-000-0000',
-			url: "http://place3.com"
-		},
-		{
-			name: "place4",
-			lat:  37,
-			lng:  -125,
-			phone:  '000-000-0000',
-			url: "http://place4.com"
-		},
-		{
-			name: "place5",
-			lat:  37,
-			lng:  -126,
-			phone:  '000-000-0000',
-			url: "http://place5.com"
-		}]
 	};	
 
 	//  Holds ViewModel functionality
@@ -75,6 +37,7 @@
 		this.place = ko.observable();  //  Bound to the place that the user searches for later use in functions 
 		this.results = ko.observableArray();  //  Tracks the places in an observable 'results' array 
 		this.markers = ko.observableArray();
+
 		//  AJAX request to Foursquare bound to user clicking 'Search' button
 		this.getPlace = function() { 
 			$.getJSON("https://api.foursquare.com/v2/venues/search?client_id=DFMQLSBHUH2LQAQ3DQYSNSAR3TYCNHQJ3DEIHVKSMK0KBGPJ&client_secret=3J5U50Y3HOGLN3DJDHROLSZB4FBHEZCNW1P3VWHANK4KRNYO&v=20130815&ll=" + 
@@ -125,6 +88,10 @@
 			};
 		}
 
+		this.getInfo = function() {
+			console.log("Info retrieved");
+		};
+
 		//  Test function below to add default markers to database and map
 		this.addDefaultMarkers = function ( defaults ) {
 			self.initializeMap( defaults );
@@ -139,11 +106,5 @@
 	    console.log(mydata);
 	    neighborhood.addDefaultMarkers(mydata);
     }
-
     render();
-
-
-    
-    
-   
 })();

@@ -26,7 +26,7 @@
 				<table>
 					<tbody data-bind="foreach: results">
 						<tr>
-							<td data-bind="text: name"></td>
+							<td data-bind="text: name, click: $parent.getInfo"></td>
 							<td data-bind="text: phone"></td>
 						</tr>
 					</tbody>

@@ -4,7 +4,7 @@
 //  [!!]  Encapsulate defaults in a model object
 //  [!!]  Add map markers
 //  [!!]  Create (4) default objects with minimum information 
-//  [  ]  Add searching and filtering functionality (what does this mean???)
+//  [  ]  Add searching and filtering functionality (what does this mean???)  <--  add 'Filter by' checkboxes to enable visibility of markers on map.  categories should include types of places to get food for now
 //  [!!]  Implement a list view of identified locations
 //  [  ]  Wire clicking of map markers to additional via AJAX requests
 //  [  ]  Add a README!!!
@@ -37,6 +37,7 @@
 		this.place = ko.observable();  //  Bound to the place that the user searches for later use in functions 
 		this.results = ko.observableArray();  //  Tracks the places in an observable 'results' array 
 		this.markers = ko.observableArray();
+		this.categories = ko.observableArray(["Coffee"]);
 
 		//  AJAX request to Foursquare bound to user clicking 'Search' button
 		this.getPlace = function() { 
@@ -74,6 +75,8 @@
   			console.log(self.markers());
 		};
 
+		
+
 		this.initializeMap = function( results ) {
 			var mapOptions = {
 					center: new google.maps.LatLng(defaults.lat, defaults.lng),
@@ -89,9 +92,12 @@
 		}
 
 		this.getInfo = function() {
-			console.log("Info retrieved");
+			console.log(this.name);
 		};
 
+		this.filter = function() {
+			console.log("I'll figure out filtering eventually")
+		};
 		//  Test function below to add default markers to database and map
 		this.addDefaultMarkers = function ( defaults ) {
 			self.initializeMap( defaults );
@@ -99,12 +105,12 @@
     };
     //  Open up the map at the default location and zoom
     
-    var render = function() {
-    	var neighborhood = new neighborhoodViewModel(),
-    		mydata = JSON.parse(defaultPlaces);
-    	ko.applyBindings( neighborhood ); 
-	    console.log(mydata);
-	    neighborhood.addDefaultMarkers(mydata);
-    }
-    render();
+    var render = (function() {
+    	var hood = new neighborhoodViewModel();
+    	var	myData = JSON.parse(defaultPlaces);
+
+    	ko.applyBindings( hood ); 
+	    hood.addDefaultMarkers(myData);
+    })();
+    //render();
 })();

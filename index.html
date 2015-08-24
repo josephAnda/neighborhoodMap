@@ -14,10 +14,14 @@
 		</div>
 		<div class="row">
 			<div class="col-md-6 container">
-				<form>
+				<form name="mapForm">
 					<div id="location">
 						Search for places (e.g. 'coffee shops'):  <input class="field" type="text" name="place" data-bind="value: place">
-						<input type="submit" value="Search" data-bind="click: getPlace">
+						<input type="submit" value="Search" data-bind="click: getPlace"><br>
+						<input type="submit" value="Filter" data-bind="click: filter"><br>
+						<input type="checkbox" name="spot1" value="Coffee" data-bind="checked:categories" > Coffee Shops
+						<input type="checkbox" name="spot2" value="Barber" data-bind="checked:categories"> Barber Shops
+						<input type="checkbox" name="spot3" value="Pizza" data-bind="checked:categories"> Pizza Places
 					</div>
 					
 				</form>

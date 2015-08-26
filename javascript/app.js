@@ -1,15 +1,18 @@
 //  TODO:
 //  [!!]  FIX ViewModel property definition bug
+//  [!!]  Add 'Category' property to Place model
 //  [  ]  Ensure appropriate separation of concerns via MVVM paradigm
 //  [!!]  Encapsulate defaults in a model object
 //  [!!]  Add map markers
 //  [!!]  Create (4) default objects with minimum information 
-//  [  ]  Add searching and filtering functionality (what does this mean???)  <--  add 'Filter by' checkboxes to enable visibility of markers on map.  categories should include types of places to get food for now
+//  [!!]  Filter list
+//  [!!]  Filter markers
 //  [!!]  Implement a list view of identified locations
 //  [  ]  Wire clicking of map markers to additional via AJAX requests
 //  [  ]  Add a README!!!
 //  [  ]  Comment and clean up code
 //  [  ]  Make the app look pretty . . . . 
+//  [!!]  Debug checkbox issue . . . (Be wary of referencing observable values after events)
 
 (function() {
 	"use strict";
@@ -22,12 +25,13 @@
 		lng: -122.32,  //  Longitude for Downtown San Mateo
 		
 		//  Prototype object to be populated with properties of JSON response from Foursquare request
-		Place: function ( name, lat, lng, phone, url ) {
+		Place: function ( name, lat, lng, phone, url, category ) {
 			this.name = name;
 			this.lat = lat;
 			this.lng = lng;
 			this.phone = phone;
 			this.url = url;
+			this.category = category;
 		},
 	};	
 
@@ -37,7 +41,10 @@
 		this.place = ko.observable();  //  Bound to the place that the user searches for later use in functions 
 		this.results = ko.observableArray();  //  Tracks the places in an observable 'results' array 
 		this.markers = ko.observableArray();
-		this.categories = ko.observableArray(["Coffee"]);
+		this.categories = ko.observableArray(["Coffee Shops", "Barber Shops", "Pizza Places"]);
+		this.tests = ko.observableArray();
+
+	
 
 		//  AJAX request to Foursquare bound to user clicking 'Search' button
 		this.getPlace = function() { 
@@ -48,7 +55,7 @@
 				//  Populates 'results' array with venue information stored in 'Place' prototype 
 				self.results.removeAll();  //  Clears previous results
 				$.each( places, function( index, item ) {
-					var place = new defaults.Place(item.name, item.location.lat, item.location.lng, item.contact.phone, item.url);
+					var place = new defaults.Place(item.name, item.location.lat, item.location.lng, item.contact.phone, item.url, item.categories[0].pluralName);
 					self.results.push(place);
 				});
 			console.log(self.results());
@@ -65,12 +72,20 @@
 			var labelIndex = 0;
 			
 			$.each( places, function ( index, item) {
-				var marker = new google.maps.Marker({
-    				position: {lat: item.lat, lng: item.lng},
-    				label: markerLabels[labelIndex++ % markerLabels.length],
-    				map: map
-  				});
-  			self.markers.push(marker);
+				if (self.categories.indexOf(item.category) != -1) {  //  Only displays marker if the category is selected
+					var marker = new google.maps.Marker({
+	    				position: {lat: item.lat, lng: item.lng},
+	    				label: markerLabels[labelIndex++ % markerLabels.length],
+	    				map: map
+	  				});
+	  				var infowindow = new google.maps.InfoWindow({
+    					content: '<p>' + item.name + '</p>'
+  					});
+  					marker.addListener('click', function() {
+					    infowindow.open(map, marker);
+					});
+  					self.markers.push(marker);
+  				}
 			})
   			console.log(self.markers());
 		};
@@ -80,7 +95,7 @@
 		this.initializeMap = function( results ) {
 			var mapOptions = {
 					center: new google.maps.LatLng(defaults.lat, defaults.lng),
-					zoom: 14
+					zoom: 13
 				};
 			
 			var map = new google.maps.Map( defaults.$mapCanvas, mapOptions );
@@ -95,8 +110,9 @@
 			console.log(this.name);
 		};
 
+	
 		this.filter = function() {
-			console.log("I'll figure out filtering eventually")
+			console.log(self.categories());
 		};
 		//  Test function below to add default markers to database and map
 		this.addDefaultMarkers = function ( defaults ) {
@@ -111,6 +127,7 @@
 
     	ko.applyBindings( hood ); 
 	    hood.addDefaultMarkers(myData);
+	    console.log(hood.categories());
     })();
     //render();
 })();

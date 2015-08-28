@@ -8,11 +8,13 @@
 //  [!!]  Filter list
 //  [!!]  Filter markers
 //  [!!]  Implement a list view of identified locations
-//  [  ]  Wire clicking of map markers to additional via AJAX requests
+//  [  ]  Wire clicking of list items to additional via AJAX requests
 //  [  ]  Add a README!!!
 //  [  ]  Comment and clean up code
 //  [  ]  Make the app look pretty . . . . 
 //  [!!]  Debug checkbox issue . . . (Be wary of referencing observable values after events)
+//  Extended note to self:  Ultimately, the only thing left to do to really clean up this app is to figure out A)  How 
+//  to make it all fit together a little more smoothly and B) Wire the clicking of list entries to the AJAX requests  
 
 (function() {
 	"use strict";

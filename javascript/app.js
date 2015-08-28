@@ -92,7 +92,11 @@
   			console.log(self.markers());
 		};
 
-		
+		this.getYelp = function() {
+			$.getJSON("http://api.yelp.com/v2/search?term=cream+puffs&location=San+Francisco", function(data) {
+				console.log(data);
+			});
+		};
 
 		this.initializeMap = function( results ) {
 			var mapOptions = {

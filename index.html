@@ -24,7 +24,7 @@
 						<input type="checkbox" name="spot3" value="Pizza Places" data-bind="checked:categories"> Pizza Places
 						<input type="checkbox" name="spot4" value="Food Courts" data-bind="checked:categories"> Food Courts<br>
 						<input type="checkbox" name="spot5" value="Chinese Restaurants" data-bind="checked:categories">Chinese Restaurants<br>
-						<input type="submit" value="YelpTest" data-bind="click: getYelp"><br>
+						
 					</div>
 					
 				</form>
@@ -32,9 +32,11 @@
 			<div class="col-md-6">
 				<table>
 					<tbody data-bind="foreach: results">
-						<tr data-bind="visible: $parent.categories.indexOf(category) != -1">
-							<td data-bind="text: name, click: $parent.getInfo"></td>
+						<tr data-bind="visible: $parent.categories.indexOf(category) != -1, click: $parent.getWiki($data)">
+							<td data-bind="text: name, click: $parent.toggleVisible($data),"></td>
 							<td data-bind="text: phone"></td>
+							<td data-bind="value: name, visible: $parent.infoVisible.indexOf(name) != -1, html: $parent.wikiData, click: $parent.getNYTimes"></td>
+							<td data-bind="visible: $parent.infoVisible.indexOf(name) != -1, html: $parent.nytData"></td>
 						</tr>
 					</tbody>
 				</table>

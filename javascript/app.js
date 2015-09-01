@@ -39,13 +39,15 @@
 		
 		this.place = ko.observable();  //  Bound to the place that the user searches for later use in functions 
 		this.results = ko.observableArray();  //  Tracks the places in an observable 'results' array 
-		this.markers = ko.observableArray();
-		this.categories = ko.observableArray(["Coffee Shops", "Barber Shops", "Pizza Places"]);
-		this.tests = ko.observableArray();
-		this.infoVisible = ko.observableArray();
-		this.wikiData = ko.observable("init");
-		this.nytData = ko.observable("null");
+		this.markers = ko.observableArray();  //  This is never used . . . TODO:  [  ]  Turn markers into accessible objects or variables 
+		this.categories = ko.observableArray(["Coffee Shops", "Barber Shops", "Pizza Places", "Food Courts", "Chinese Restaurants"]);  //  observable array for checked categories
+		this.tests = ko.observableArray();  //  Never used, but may be accessed in later versions 
+		this.infoVisible = ko.observableArray();  //  Determines whether or not the list view shows extra AJAX info
+		this.wikiData = ko.observable("init");  //  This changes to display the currently selected venue's wiki data
+		this.nytData = ko.observable("null");  //  This changes to show the currently selected venue's Times data
 		
+
+		//  Controls the visibility of additional information in a list entry  
 		this.toggleVisible = function( place ) {
 			
 			self.infoVisible.removeAll();
@@ -68,7 +70,6 @@
 					var place = new defaults.Place(item.name, item.location.lat, item.location.lng, item.contact.phone, item.url, item.categories[0].pluralName);
 					var i = 0;
 					self.results.push(place);
-					//self.infoVisible.push(i);
 				});
 			console.log(self.results());
 			self.initializeMap(self.results());
@@ -83,6 +84,7 @@
 			var markerLabels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 			var labelIndex = 0;
 			
+			//  Creates map markers based on associated filter preferences
 			$.each( places, function ( index, item) {
 				if (self.categories.indexOf(item.category) != -1) {  //  Only displays marker if the category is selected
 					var marker = new google.maps.Marker({
@@ -101,6 +103,8 @@
 			})
   			//console.log(self.markers());
 		};
+
+		//  AJAX request to New York Times website 
 		this.getNYTimes = function ( spot ) {
 			var key = "&api-key=6b539ed4808bc69e6e974a036e2de9f2:1:72423609";
 	    	var nytimesApiUrl = "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + spot.name + key;
@@ -121,7 +125,8 @@
 	        	console.log('New York Times Articles Could Not Be Loaded');
 	        });
 	    }
-	
+		
+		//  Wikipedia request to New York Times website  
 		this.getWiki = function( spot ) {
 			var remoteUrlWithOrigin = "https://en.wikipedia.org/w/api.php";
 			var queryData = {
@@ -138,6 +143,7 @@
 			    dataType: 'jsonp',
 			    type: 'POST',
 			    headers: { 'Api-User-Agent': 'Joseph Anda -- orenmurasaki@gmail.com' },
+			    //  'success' function alters the snippet and makes it the current wikiData item
 			    success: function(data) {
 			    	if(data.query.search[0].snippet) {
 			    		self.wikiData(data.query.search[0].snippet);
@@ -145,13 +151,12 @@
 			    	};
 			    	console.log("test");
 			    	console.log(data.query.search[0].snippet.toString());
-			    	console.log(data);
-			       
-			       
-			}
-} );
+			    	console.log(data);       
+				}
+			});
 		};
 		
+		//  opens up the map for the first time 
 		this.initializeMap = function( results ) {
 			var mapOptions = {
 					center: new google.maps.LatLng(defaults.lat, defaults.lng),
@@ -160,17 +165,18 @@
 			
 			var map = new google.maps.Map( defaults.$mapCanvas, mapOptions );
 			
+			//  Prevents undefined error  
 			if ( results ) {
 				//console.log(results);
 				self.addMarkers(results, map);
 			};
 		};
-
+		//  Test function
 		this.getInfo = function() {
 			console.log(this.name);
 		};
 
-	
+		//  Test function 
 		this.filter = function() {
 			console.log(self.categories());
 		};
@@ -189,5 +195,5 @@
 	    hood.addDefaultMarkers(myData);
 	    //console.log(hood.categories());
     })();
-    //render();
+    
 })();

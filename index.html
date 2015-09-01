@@ -35,7 +35,9 @@
 						<tr data-bind="visible: $parent.categories.indexOf(category) != -1, click: $parent.getWiki($data)">
 							<td data-bind="text: name, click: $parent.toggleVisible($data),"></td>
 							<td data-bind="text: phone"></td>
-							<td data-bind="value: name, visible: $parent.infoVisible.indexOf(name) != -1, html: $parent.wikiData, click: $parent.getNYTimes"></td>
+							<td data-bind="value: name, visible: $parent.infoVisible.indexOf(name) != -1, html: $parent.wikiData, click: $parent.getNYTimes">
+								<button type="button">Open News Articles</button>
+							</td>
 							<td data-bind="visible: $parent.infoVisible.indexOf(name) != -1, html: $parent.nytData"></td>
 						</tr>
 					</tbody>

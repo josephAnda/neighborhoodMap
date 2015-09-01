@@ -27,8 +27,8 @@
 			this.url = url;
 			this.category = category;
 			this.index = index;
-			this.wiki = "static";
-			this.nyt = "null";
+			this.wiki = "";
+			this.nyt = "";
 			
 		},
 	};	

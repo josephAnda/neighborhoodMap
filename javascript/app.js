@@ -55,10 +55,37 @@
 				console.log(self.infoVisible());
 			
 		};
-	
+		//  Filters based on user query WITHOUT using an AJAX request.  If a search has been conducted, it filters based on  
+		//  the ko.observable 'results() array.  If no search has been conducted (or if the observable is otherwise empty)
+		//  The defaults will be used from the included json file and the query will be compared against the file's entries
+		this.filter = function() {
+			
+			var results = [];
+			var defaults;
+
+			if (self.results().length > 0) { 
+				//alert("self.results() is not empty right now");
+				//console.log(self.results());
+				defaults = self.results();
+			} else {
+				defaults = JSON.parse(defaultPlaces); 
+				//alert("self.results() is empty");
+				//console.log(defaults);
+			}
+
+			
+			$.each( defaults, function( index, item ) {
+				if (item.name.toLowerCase().search(self.place().toLowerCase()) != -1) {
+					results.push(item);
+				}
+			});
+			self.initializeMap( results );
+			
+		};
 
 		//  AJAX request to Foursquare bound to user clicking 'Search' button
 		this.getPlace = function() { 
+
 			$.getJSON("https://api.foursquare.com/v2/venues/search?client_id=DFMQLSBHUH2LQAQ3DQYSNSAR3TYCNHQJ3DEIHVKSMK0KBGPJ&client_secret=3J5U50Y3HOGLN3DJDHROLSZB4FBHEZCNW1P3VWHANK4KRNYO&v=20130815&ll=" + 
 			defaults.lat + "," + defaults.lng + "&query=" + self.place(), function( data ) {
 				var places = data.response.venues;  //  Pulls the array of search results from the JSON response 
@@ -176,10 +203,7 @@
 			console.log(this.name);
 		};
 
-		//  Test function 
-		this.filter = function() {
-			console.log(self.categories());
-		};
+
 		//  Test function below to add default markers to database and map
 		this.addDefaultMarkers = function ( defaults ) {
 			self.initializeMap( defaults );

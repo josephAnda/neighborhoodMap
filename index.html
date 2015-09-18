@@ -16,9 +16,10 @@
 			<div class="col-md-6 container">
 				<form name="mapForm">
 					<div id="location">
-						Search for places (e.g. 'coffee shops') to filter map markers:  <input class="field" type="text" name="place" data-bind="value: place">
-						<input type="submit" value="Search" data-bind="click: getPlace"><br>
-						<span>Listed search results filter (checking none hides all results)</span><br>
+						Search for places (e.g. 'coffee shops') to generate map markers.  Click 'filter' to filter markers by query matches.  <input class="field" type="text" name="place" data-bind="value: place"><br>
+						<input type="submit" value="Filter Markers" data-bind="click: filter">
+						<input type="submit" value ="Search" data-bind="click: getPlace"><br>
+						<span>List view filter (checking none hides all results)</span><br>
 						<input type="checkbox" name="spot1" value="Coffee Shops" data-bind="checked:categories" > Coffee Shops
 						<input type="checkbox" name="spot2" value="Barber Shops" data-bind="checked:categories"> Barber Shops
 						<input type="checkbox" name="spot3" value="Pizza Places" data-bind="checked:categories"> Pizza Places

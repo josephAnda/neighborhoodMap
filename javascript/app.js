@@ -1,5 +1,6 @@
 //  TODO:
-//  [  ]  Ensure appropriate separation of concerns via MVVM paradigm
+//  [!!]  Ensure appropriate separation of concerns via MVVM paradigm
+//  [!!]  Animate map markers 
 //  [!!]  Wire clicking of list items to display Wiki info
 //  [!!]  Create true/false index property for each place
 //  [  ]  Display NYT information via nyt parameter
@@ -49,10 +50,13 @@
 
 		//  Controls the visibility of additional information in a list entry  
 		this.toggleVisible = function( place ) {
-			
+			var results = [];
+			results.push(place);
 			self.infoVisible.removeAll();
 			self.infoVisible.push(place.name);
-				console.log(self.infoVisible());
+				//console.log(self.infoVisible());
+			self.initializeMap ( results );
+
 			
 		};
 		//  Filters based on user query WITHOUT using an AJAX request.  If a search has been conducted, it filters based on  
@@ -104,21 +108,39 @@
 			self.markers.removeAll(); //  Clears previous markers
 			var markerLabels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 			var labelIndex = 0;
+			var infoWindowOpen = false;
 			
 			//  Creates map markers based on associated filter preferences
 			$.each( places, function ( index, item) {
+				var toggleBounce = function() {
+		 	 			if (marker.getAnimation() !== null) {
+		    				marker.setAnimation(null);
+		  				} else { 
+		  					marker.setAnimation(google.maps.Animation.BOUNCE);
+  						}
+				}
 				if (self.categories.indexOf(item.category) != -1) {  //  Only displays marker if the category is selected
 					var marker = new google.maps.Marker({
 	    				position: {lat: item.lat, lng: item.lng},
 	    				label: markerLabels[labelIndex++ % markerLabels.length],
+	    				animation: google.maps.Animation.DROP,
 	    				map: map
 	  				});
+	  				//  Animate marker
+	  				marker.setAnimation(google.maps.Animation.BOUNCE);
+	  				//  Creates info window with AJAX info
 	  				var infowindow = new google.maps.InfoWindow({
-    					content: '<p>' + item.name + '</p>'
+    					content: '<p>' + item.name + '</p>' + '<p>' + self.wikiData() + '</p>'
   					});
+  					if (!infoWindowOpen) {
+  						infowindow.open(map, marker);
+  						infoWindowOpen = true;
+  					};
   					marker.addListener('click', function() {
 					    infowindow.open(map, marker);
+					    toggleBounce();
 					});
+					
   					self.markers.push(marker);
   				}
 			})

@@ -60,27 +60,21 @@
 		//  The defaults will be used from the included json file and the query will be compared against the file's entries
 		this.filter = function() {
 			
-			var results = [];
-			var defaults;
-
+			var results = [],
+				places;
+			//  Populate with pre-loaded defaults or with results of a prior AJAX request
 			if (self.results().length > 0) { 
-				//alert("self.results() is not empty right now");
-				//console.log(self.results());
-				defaults = self.results();
+				places = self.results();
 			} else {
-				defaults = JSON.parse(defaultPlaces); 
-				//alert("self.results() is empty");
-				//console.log(defaults);
+				places = JSON.parse(defaultPlaces); 
 			}
-
-			
-			$.each( defaults, function( index, item ) {
+			//  Pushes place to 'results' array if the query is contained inside of the place's name
+			$.each( places, function( index, item ) {
 				if (item.name.toLowerCase().search(self.place().toLowerCase()) != -1) {
 					results.push(item);
 				}
 			});
 			self.initializeMap( results );
-			
 		};
 
 		//  AJAX request to Foursquare bound to user clicking 'Search' button

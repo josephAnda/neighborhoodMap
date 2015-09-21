@@ -41,10 +41,10 @@
 		this.place = ko.observable();  //  Bound to the place that the user searches for later use in functions 
 		this.results = ko.observableArray();  //  Tracks the places in an observable 'results' array 
 		this.markers = ko.observableArray();  //  This is never used . . . TODO:  [  ]  Turn markers into accessible objects or variables 
-		this.categories = ko.observableArray(["Coffee Shops", "Barber Shops", "Pizza Places", "Food Courts", "Chinese Restaurants"]);  //  observable array for checked categories
+		this.categories = ko.observableArray(["Coffee Shops", "Salons / Barber Shops", "Pizza Places", "Food Courts", "Chinese Restaurants"]);  //  observable array for checked categories
 		this.tests = ko.observableArray();  //  Never used, but may be accessed in later versions 
 		this.infoVisible = ko.observableArray();  //  Determines whether or not the list view shows extra AJAX info
-		this.wikiData = ko.observable("init");  //  This changes to display the currently selected venue's wiki data
+		this.wikiData = ko.observable("Click a location in the list for more information!");  //  This changes to display the currently selected venue's wiki data
 		this.nytData = ko.observable("null");  //  This changes to show the currently selected venue's Times data
 		
 
@@ -74,7 +74,7 @@
 			}
 			//  Pushes place to 'results' array if the query is contained inside of the place's name
 			$.each( places, function( index, item ) {
-				if (item.name.toLowerCase().search(self.place().toLowerCase()) != -1) {
+				if (item.name.toLowerCase().search(self.place().toLowerCase()) !== -1) {
 					results.push(item);
 				}
 			});
@@ -93,13 +93,14 @@
 				self.infoVisible.removeAll(); 
 				$.each( places, function( index, item ) {
 					var place = new defaults.Place(item.name, item.location.lat, item.location.lng, item.contact.phone, item.url, item.categories[0].pluralName);
-					var i = 0;
+					//var i = 0;
 					self.results.push(place);
 				});
 			console.log(self.results());
 			self.initializeMap(self.results());
-			});
-			return false   //  DON'T refresh the page!!!
+			})
+			.error(function() { alert("error"); });  //  Basic error handler
+			return false;   //  DON'T refresh the page!!!
 		};
 
 		this.addMarkers = function( places, map ) {
@@ -112,6 +113,7 @@
 			
 			//  Creates map markers based on associated filter preferences
 			$.each( places, function ( index, item) {
+				//  This function is courtesy of a Google Developers example
 				var toggleBounce = function() {
 		 	 			if (marker.getAnimation() !== null) {
 		    				marker.setAnimation(null);
@@ -119,23 +121,29 @@
 		  					marker.setAnimation(google.maps.Animation.BOUNCE);
   						}
 				}
-				if (self.categories.indexOf(item.category) != -1) {  //  Only displays marker if the category is selected
+				var openInfoWindow = function( item ) {
+		  				
+	  					if (!infoWindowOpen) {
+	  						infowindow.open(map, marker);
+	  						infoWindowOpen = true;
+	  					};
+  					}
+				if (self.categories.indexOf(item.category) !== -1) {  //  Only displays marker if the category is selected
 					var marker = new google.maps.Marker({
 	    				position: {lat: item.lat, lng: item.lng},
 	    				label: markerLabels[labelIndex++ % markerLabels.length],
 	    				animation: google.maps.Animation.DROP,
 	    				map: map
 	  				});
+	  				var infowindow = new google.maps.InfoWindow({
+	    					content: '<p>' + item.name + '</p>' + 
+	    					'<div id="wikipedia-info"></div>' + 
+	    					'<div id="nyt-info"></div>'
+	  				});
 	  				//  Animate marker
 	  				marker.setAnimation(google.maps.Animation.BOUNCE);
-	  				//  Creates info window with AJAX info
-	  				var infowindow = new google.maps.InfoWindow({
-    					content: '<p>' + item.name + '</p>' + '<p>' + self.wikiData() + '</p>'
-  					});
-  					if (!infoWindowOpen) {
-  						infowindow.open(map, marker);
-  						infoWindowOpen = true;
-  					};
+	  				//  Creates info window with AJAX info  TODO:  [  }  Populate this with an AJAX request directly
+	  				openInfoWindow( item );
   					marker.addListener('click', function() {
 					    infowindow.open(map, marker);
 					    toggleBounce();
@@ -151,6 +159,7 @@
 		this.getNYTimes = function ( spot ) {
 			var key = "&api-key=6b539ed4808bc69e6e974a036e2de9f2:1:72423609";
 	    	var nytimesApiUrl = "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + spot.name + key;
+	    	var $nytDiv = $("#nyt-info");
 	    	$.getJSON( nytimesApiUrl  , function( data ) {
 	    		var articles = data.response.docs;
 	    		var tags = [];
@@ -162,6 +171,7 @@
                 	//$nytElem.append(tags[index]);
             	});
             	self.nytData(tags[0]);
+            	$nytDiv.html(self.nytData());
             	console.log(tags);
             	console.log(data);
 	    	}).error(function(e){
@@ -179,7 +189,7 @@
 				srsearch: spot.name,
 				srwhat: "text"
 			};
-
+			var $wikiDiv = $("#wikipedia-info");
 			$.ajax( {
 			    url: remoteUrlWithOrigin,
 			    data: queryData,
@@ -194,7 +204,8 @@
 			    	};
 			    	console.log("test");
 			    	console.log(data.query.search[0].snippet.toString());
-			    	console.log(data);       
+			    	console.log(data);
+			    	$wikiDiv.html(self.wikiData());       
 				}
 			});
 		};

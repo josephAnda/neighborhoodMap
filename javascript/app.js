@@ -3,9 +3,11 @@
 //  [!!]  Animate map markers 
 //  [!!]  Wire clicking of list items to display Wiki info
 //  [!!]  Create true/false index property for each place
+//  [  ]  Fix initial animations 
 //  [  ]  Display NYT information via nyt parameter
 //  [  ]  Comment and clean up code
 //  [  ]  Make the app look pretty . . . . 
+//  [  ]  Limit the initial markers to (1) info window
 //  Extended note to self:  Ultimately, the only thing left to do to really clean up this app is to figure out A)  How 
 //  to make it all fit together a little more smoothly and B) Wire the clicking of list entries to the AJAX requests  
 
@@ -141,10 +143,13 @@
 	    					'<div id="nyt-info"></div>'
 	  				});
 	  				//  Animate marker
-	  				marker.setAnimation(google.maps.Animation.BOUNCE);
-	  				//  Creates info window with AJAX info  TODO:  [  }  Populate this with an AJAX request directly
+	  				//  marker.setAnimation(google.maps.Animation.BOUNCE);
+	  				//  Creates info window with AJAX info  TODO:  [!!]  Populate this with an AJAX request directly
 	  				openInfoWindow( item );
   					marker.addListener('click', function() {
+  						if (infowindow) {
+  							infowindow.close();
+  						};
 					    infowindow.open(map, marker);
 					    toggleBounce();
 					});

@@ -1,8 +1,16 @@
-Neighborhood Mapper V.1.0.0 by Joseph Anda
+Neighborhood Mapper V.1.1.0 by Joseph Anda
 
-NOTE TO GRADER:  
+NEW NOTES TO GRADER:
 
-Hello!  This version is far from complete, and the bulk of the problems lie in the physical layout of the User Interface and synchronization of AJAX requests (with each other, specifically NYTimes and Wikipedia).  In this submission, I hope to find feedback that suggest ways to streamline my UI, sync up my non-Foursquare AJAX requests, and perhaps even make the code more compact.  
+Insightful commentary (thank you).  
+
+NOTABLE CHANGES:
+
+--Results can be filtered without an AJAX request (hit 'enter' rather than clicking 'search')
+--Info windows now feature more information, which is altered via the AJAX requests themselves 
+--The opening of an info window is bundled in a separate function 
+--Clicking list entries open associated markers 
+--Markers feature animation 
 
 USING THE MAPPER:
 

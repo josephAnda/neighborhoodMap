@@ -2,6 +2,9 @@ Neighborhood Mapper V.1.1.0 by Joseph Anda
 
 NEW NOTES TO GRADER:
 
+Is it possible to keep track of map markers as DOM elements?  This would allow me to pair a ko.observable with
+the current marker, and update it based on the place that it matches.  Specifically, I would like to create a infoWindow with information based on the associated map marker (rather than relying on the user clicking a list entry associated with that map marker).  As it stands, I can only take full advantage of ko.observables when manipulating DOM elements (like list entries), but not with map markers (like the 5 markers that I populate the page with by default).  
+
 Insightful commentary (thank you).  
 
 NOTABLE CHANGES:

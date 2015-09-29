@@ -3,7 +3,9 @@
 //  [!!]  Animate map markers 
 //  [!!]  Wire clicking of list items to display Wiki info
 //  [!!]  Create true/false index property for each place
-//  [  ]  Fix initial animations 
+//  [!!]  Fix initial animations
+//  [  ]  Use self.getPlace to pre-load defaults (copy and paste results logged in the console) 
+//  [  ]  Add titles to labels via trackable title parameter (?)
 //  [  ]  Display NYT information via nyt parameter
 //  [  ]  Comment and clean up code
 //  [  ]  Make the app look pretty . . . . 
@@ -48,6 +50,7 @@
 		this.infoVisible = ko.observableArray();  //  Determines whether or not the list view shows extra AJAX info
 		this.wikiData = ko.observable("Click a location in the list for more information!");  //  This changes to display the currently selected venue's wiki data
 		this.nytData = ko.observable("null");  //  This changes to show the currently selected venue's Times data
+		
 		
 
 		//  Controls the visibility of additional information in a list entry  
@@ -111,6 +114,9 @@
 			self.markers.removeAll(); //  Clears previous markers
 			var markerLabels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 			var labelIndex = 0;
+			var infowindow = new google.maps.InfoWindow({
+	    					content: ""
+	  				});
 			var infoWindowOpen = false;
 			
 			//  Creates map markers based on associated filter preferences
@@ -137,19 +143,15 @@
 	    				animation: google.maps.Animation.DROP,
 	    				map: map
 	  				});
-	  				var infowindow = new google.maps.InfoWindow({
-	    					content: '<p>' + item.name + '</p>' + 
+	  				infowindow.content = '<p>Click list entries for more information</p>' + 
 	    					'<div id="wikipedia-info"></div>' + 
-	    					'<div id="nyt-info"></div>'
-	  				});
+	    					'<div id="nyt-info"></div>';
+	  				
 	  				//  Animate marker
 	  				//  marker.setAnimation(google.maps.Animation.BOUNCE);
 	  				//  Creates info window with AJAX info  TODO:  [!!]  Populate this with an AJAX request directly
 	  				openInfoWindow( item );
   					marker.addListener('click', function() {
-  						if (infowindow) {
-  							infowindow.close();
-  						};
 					    infowindow.open(map, marker);
 					    toggleBounce();
 					});

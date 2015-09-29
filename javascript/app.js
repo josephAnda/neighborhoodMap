@@ -104,7 +104,7 @@
 			console.log(self.results());
 			self.initializeMap(self.results());
 			})
-			.error(function() { alert("error"); });  //  Basic error handler
+			.error(function(e) { alert("error"); });  //  Basic error handler
 			return false;   //  DON'T refresh the page!!!
 		};
 
@@ -213,7 +213,8 @@
 			    	console.log(data.query.search[0].snippet.toString());
 			    	console.log(data);
 			    	$wikiDiv.html(self.wikiData());       
-				}
+				},
+				error: function { alert('Could not fetch Wiki documents'); }
 			});
 		};
 		

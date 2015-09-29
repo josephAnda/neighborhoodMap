@@ -9,14 +9,19 @@ Insightful commentary (thank you).
 
 NOTABLE CHANGES:
 
+--All five markers load initially
 --Results can be filtered without an AJAX request (hit 'enter' rather than clicking 'search')
 --Info windows now feature more information, which is altered via the AJAX requests themselves 
 --The opening of an info window is bundled in a separate function 
---Clicking list entries open associated markers 
+--Clicking list entries open associated markers, with an info window
 --Markers feature animation 
+--One window opens at a time
+--A responsive meta tag has been added
+--Error handling functions added to the AJAX requests 
 
 USING THE MAPPER:
 
+0)  Open the file titled 'index.html' in your web browser.  
 1)  Search a type of venue by entering it into the search bar (e.g., 'coffee shops') and clicking the 'search' button.
 2)  View ,filter, and explore results in the list by checking and unchecking category boxes, or clicking on names in the list
 3)  Clcick the names to pull up Wiki info (if available), and click on the Wiki info to get more info (additional info from new york times)

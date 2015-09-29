@@ -9,18 +9,16 @@
 	</head>
 	<body>
 		<div class="row">
-			<div class="col-md-3"></div>
-			<div class="col-md-6"><h2>Neighborhood Mapper</h2></div>
-			<div class="col-md-3"></div>
+			<div class="col-md-6 col-md-offset-3"><h2>Neighborhood Mapper</h2></div>
 		</div>
 		<div class="row">
 			<div class="col-md-6 container">
 				<form name="mapForm">
 					<div id="location">
-						Click 'search' to search for places (e.g. 'coffee shops') to generate map markers.  Hit 'enter' after typing a query to filter markers based on the query rather than category.  <input class="field" type="text" name="place" data-bind="value: place"><br>
+						<b>Click 'search'</b> to search for places (e.g. 'coffee shops') to generate map markers.  <b>Hit 'enter'</b> after typing a query to filter markers based on the query rather than category.  <input class="field" type="text" name="place" data-bind="value: place"><br>
 						<input type="submit" value="Filter Markers" data-bind="click: filter">
 						<input type="submit" value ="Search" data-bind="click: getPlace"><br>
-						<span>List view filter (checking none hides all results)</span><br>
+						<span><b>List view filter</b> (checking none hides all results)</span><br>
 						<input type="checkbox" name="spot1" value="Coffee Shops" data-bind="checked:categories" > Coffee Shops
 						<input type="checkbox" name="spot2" value="Salons / Barber Shops" data-bind="checked:categories"> Salons / Barber Shops
 						<input type="checkbox" name="spot3" value="Pizza Places" data-bind="checked:categories"> Pizza Places

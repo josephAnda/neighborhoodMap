@@ -214,7 +214,8 @@
 			    	console.log(data);
 			    	$wikiDiv.html(self.wikiData());       
 				},
-				error: function { alert('Could not fetch Wiki documents'); }
+				error: function() { 
+					alert('Could not fetch Wiki documents'); }
 			});
 		};
 		

@@ -7,7 +7,7 @@
 //		  [  ]  De-couple the AJAX info from list clicking, make it so the AJAX info is available for info window immediately
 //  [  ]  Provide data about what the list view info represents (and remove reference to list view from info window)
 //  [  ]  " ... the "search function" needs to perform like your "filter markers" function. "
-//  [  ]  The search function should filter the list down as you type into it.
+//  [  ]  The search function should filter the list down as you type into it (try using textInput binding)
 
 (function() {
 	"use strict";

@@ -1,17 +1,13 @@
 //  TODO:
-//  [!!]  Ensure appropriate separation of concerns via MVVM paradigm
-//  [!!]  Animate map markers 
-//  [!!]  Wire clicking of list items to display Wiki info
-//  [!!]  Create true/false index property for each place
-//  [!!]  Fix initial animations
-//  [  ]  Use self.getPlace to pre-load defaults (copy and paste results logged in the console) 
-//  [  ]  Add titles to labels via trackable title parameter (?)
-//  [  ]  Display NYT information via nyt parameter
-//  [  ]  Comment and clean up code
-//  [  ]  Make the app look pretty . . . . 
-//  [  ]  Limit the initial markers to (1) info window
-//  Extended note to self:  Ultimately, the only thing left to do to really clean up this app is to figure out A)  How 
-//  to make it all fit together a little more smoothly and B) Wire the clicking of list entries to the AJAX requests  
+//  [!!]  Render a list initially that matches the default markers
+//  [!!]  Turn the map into a background element or put the text in a scrollable box for overflow
+//  [  ]  Fix markers
+//		  [  ]  Have markers labels move with animation
+//		  [  ]  Automate the cessation of animation (eliminate the need to click to make it stop)
+//		  [  ]  De-couple the AJAX info from list clicking, make it so the AJAX info is available for info window immediately
+//  [  ]  Provide data about what the list view info represents (and remove reference to list view from info window)
+//  [  ]  " ... the "search function" needs to perform like your "filter markers" function. "
+//  [  ]  The search function should filter the list down as you type into it.
 
 (function() {
 	"use strict";
@@ -76,6 +72,7 @@
 				places = self.results();
 			} else {
 				places = JSON.parse(defaultPlaces); 
+
 			}
 			//  Pushes place to 'results' array if the query is contained inside of the place's name
 			$.each( places, function( index, item ) {
@@ -92,7 +89,7 @@
 			$.getJSON("https://api.foursquare.com/v2/venues/search?client_id=DFMQLSBHUH2LQAQ3DQYSNSAR3TYCNHQJ3DEIHVKSMK0KBGPJ&client_secret=3J5U50Y3HOGLN3DJDHROLSZB4FBHEZCNW1P3VWHANK4KRNYO&v=20130815&ll=" + 
 			defaults.lat + "," + defaults.lng + "&query=" + self.place(), function( data ) {
 				var places = data.response.venues;  //  Pulls the array of search results from the JSON response 
-				//console.log( places );  //  Test . . . . 
+				console.log( places );  //  Test . . . . 
 				//  Populates 'results' array with venue information stored in 'Place' prototype 
 				self.results.removeAll();  //  Clears previous results
 				self.infoVisible.removeAll(); 
@@ -233,6 +230,7 @@
 				//console.log(results);
 				self.addMarkers(results, map);
 			};
+	
 		};
 		//  Test function
 		this.getInfo = function() {
@@ -244,6 +242,14 @@
 		this.addDefaultMarkers = function ( defaults ) {
 			self.initializeMap( defaults );
 		}
+
+		//  [!!]  Add a function to push each default to self.results(), thus populating the list initially;
+		this.addDefaultList = function ( defaults ) {
+				$.each( defaults, function( index, item ) {
+					self.results.push( item );
+				});
+				console.log( self.results() );
+			}
     };
     //  Open up the map at the default location and zoom
     
@@ -253,6 +259,7 @@
 
     	ko.applyBindings( hood ); 
 	    hood.addDefaultMarkers(myData);
+	    hood.addDefaultList(myData);
 	    //console.log(hood.categories());
     })();
     

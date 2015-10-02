@@ -29,8 +29,15 @@
 					
 				</form>
 			</div>
-			<div class="col-md-6" style="overflow: auto; height:200px; width:500px; border:1px solid #ccc;">
+			<div class="col-md-6" style="overflow: auto; height:175px; width:500px; border:1px solid #ccc;">
 				<table>
+					<thead>
+						<tr>
+							<td>Location</td>
+							<td>Phone Number</td>
+							<td>Wikipedia Articles</td>
+						</tr>
+					</thead>
 					<tbody data-bind="foreach: results">
 						<tr data-bind="visible: $parent.categories.indexOf(category) != -1, click: $parent.getWiki($data)">
 							<td data-bind="text: name, click: $parent.toggleVisible($data)," style="width: 150px"></td>

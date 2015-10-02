@@ -32,3 +32,7 @@ h2 {
     width: 80%;
     clear: both;
 }
+
+thead {
+	font-weight: bold;
+}

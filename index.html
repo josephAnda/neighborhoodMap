@@ -16,8 +16,8 @@
 				<form name="mapForm">
 					<div id="location">
 						<b>Click 'search'</b> to search for places (e.g. 'coffee shops') to generate map markers.  <b>Hit 'enter'</b> after typing a query to filter markers based on the query rather than category.  <input class="field" type="text" name="place" data-bind="textInput: place, event: { keypress: filterList }"><br>
-						<input type="submit" value="Filter Markers" data-bind="click: filter">
-						<input type="submit" value ="Search" data-bind="click: getPlace"><br>
+						<input type="submit" value="Get Markers" data-bind="click: getMarkers">
+						<input type="submit" value ="Search" data-bind="click: filter"><br>
 						<span><b>List view filter</b> (checking none hides all results)</span><br>
 						<input type="checkbox" name="spot1" value="Coffee Shops" data-bind="checked:categories" > Coffee Shops
 						<input type="checkbox" name="spot2" value="Salons / Barber Shops" data-bind="checked:categories"> Salons / Barber Shops

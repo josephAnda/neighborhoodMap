@@ -5,9 +5,9 @@
 //		  [  ]  Have markers labels move with animation
 //		  [  ]  Automate the cessation of animation (eliminate the need to click to make it stop)
 //		  [  ]  De-couple the AJAX info from list clicking, make it so the AJAX info is available for info window immediately
-//  [  ]  Provide data about what the list view info represents (and remove reference to list view from info window)
-//  [  ]  " ... the "search function" needs to perform like your "filter markers" function. "
-//  [  ]  The search function should filter the list down as you type into it (try using 'visible' binding)
+//  [!!]  Provide data about what the list view info represents (and remove reference to list view from info window)
+//  [!!]  " ... the "search function" needs to perform like your "filter markers" function. "
+//  [!!]  The search function should filter the list down as you type into it (try using 'visible' binding)
 
 (function() {
 	"use strict";
@@ -38,7 +38,7 @@
 	function neighborhoodViewModel() {
 		var self = this;  //  Allows 'this' to be used within nested scopes
 		
-		this.place = ko.observable("Type a place nearby and hit the 'space' bar to filter . . . ");  //  Bound to the place that the user searches for later use in functions 
+		this.place = ko.observable("");  //  Bound to the place that the user searches for later use in functions 
 		this.results = ko.observableArray();  //  Tracks the places in an observable 'results' array 
 		this.markers = ko.observableArray();  //  This is never used . . . TODO:  [  ]  Turn markers into accessible objects or variables 
 		this.categories = ko.observableArray(["Coffee Shops", "Salons / Barber Shops", "Pizza Places", "Food Courts", "Chinese Restaurants"]);  //  observable array for checked categories
@@ -47,22 +47,74 @@
 		this.wikiData = ko.observable("Click a location in the list for more information!");  //  This changes to display the currently selected venue's wiki data
 		this.nytData = ko.observable("null");  //  This changes to show the currently selected venue's Times data
 		
-		
-
-		//  Controls the visibility of additional information in a list entry  
-		this.toggleVisible = function( place ) {
-			var results = [];
-			results.push(place);
-			self.infoVisible.removeAll();
-			self.infoVisible.push(place.name);
-				//console.log(self.infoVisible());
-			self.initializeMap ( results );
-
+		//  Generates a map with the associated markers 
+		this.initializeMap = function( results ) {
+			var mapOptions = {
+					center: new google.maps.LatLng(defaults.lat, defaults.lng),
+					zoom: 13
+				};
 			
+			var map = new google.maps.Map( defaults.$mapCanvas, mapOptions );
+			
+			if ( results ) {
+				self.addMarkers(results, map);
+			};
 		};
-		//  Filters based on user query WITHOUT using an AJAX request.  If a search has been conducted, it filters based on  
-		//  the ko.observable 'results() array.  If no search has been conducted (or if the observable is otherwise empty)
-		//  The defaults will be used from the included json file and the query will be compared against the file's entries
+
+		//  Generates Google Map markers
+		this.addMarkers = function( places, map ) {
+
+			self.markers.removeAll(); 
+			var markerLabels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+			var labelIndex = 0;
+			var infowindow = new google.maps.InfoWindow({
+	    					content: ""
+	  				});
+			var infoWindowOpen = false;
+			
+			//  Creates map markers based on associated user query 
+			$.each( places, function ( index, item) {
+				//  This function is courtesy of a Google Developers example for animation 
+				var toggleBounce = function() {
+		 	 			if (marker.getAnimation() !== null) {
+		    				marker.setAnimation(null);
+		  				} else { 
+		  					marker.setAnimation(google.maps.Animation.BOUNCE);
+  						}
+				}
+				var openInfoWindow = function( item ) {
+		  				
+	  					if (!infoWindowOpen) {
+	  						infowindow.open(map, marker);
+	  						infoWindowOpen = true;
+	  					};
+  					}
+  				//  Only displays marker if the category is selected
+				if (self.categories.indexOf(item.category) !== -1) {  
+					var marker = new google.maps.Marker({
+	    				position: {lat: item.lat, lng: item.lng},
+	    				label: markerLabels[labelIndex++ % markerLabels.length],
+	    				animation: google.maps.Animation.DROP,
+	    				map: map
+	  				});
+	  				infowindow.content = '<p></p>' + 
+	    					'<div id="wikipedia-info"></div>' + 
+	    					'<div id="nyt-info"></div>';
+	  				
+	  				//  Create info window and animate marker 
+	  				openInfoWindow( item );
+  					marker.addListener('click', function() {
+					    infowindow.open(map, marker);
+					    toggleBounce();
+					});
+					
+  					self.markers.push(marker);
+  				}
+			})
+  			//console.log(self.markers());
+		};
+		
+		//  Compares query with 'results' observable and initializes a map w/out AJAX request
 		this.filter = function() {
 			
 			var results = [],
@@ -83,101 +135,53 @@
 			self.initializeMap( results );
 		};
 
-		this.filterList = function( data ) {
+		//  Controls the visibility of additional information in a list entry  
+		this.toggleVisible = function( place ) {
+			var results = [];
+			results.push(place);
+			self.infoVisible.removeAll();
+			self.infoVisible.push(place.name);
+			self.initializeMap ( results );
 
+			
+		};
+
+		//  Filters current list items as the user types
+		this.filterList = function( data ) {
 			console.log(data.place());
 			console.log(self.results());
 			$.each( self.results(), function( index, item) {
-				if (item.name.toLowerCase().search(data.place().toLowerCase()) !== -1) {
-					console.log('query contained in list');
-					//TODO  [  ]  Use the 'visible' binding to control wether list items show up or not
-					//IDEA:  The visible trait should be paired to whether or not the name is returned in the
-					//		'results' observable, rather than whether or not the category is in the 'categories'
-					//       array.  
+				if ((item != null) && (item.name.toLowerCase().search(data.place().toLowerCase()) !== -1)) {
+					console.log('query contained in list');  //  Testing . . . 
 				} else {
-					/*  Do something else . . . ? */ 
+					self.results.remove( item );
 				}
-			})
-			
+			});
 			return true;
-
 		};
 
-		//  AJAX request to Foursquare bound to user clicking 'Search' button
-		this.getPlace = function() { 
+		//  AJAX request to Foursquare bound to user clicking 'Get Markers' button.  Also initializes map markers
+		this.getMarkers = function() { 
 
 			$.getJSON("https://api.foursquare.com/v2/venues/search?client_id=DFMQLSBHUH2LQAQ3DQYSNSAR3TYCNHQJ3DEIHVKSMK0KBGPJ&client_secret=3J5U50Y3HOGLN3DJDHROLSZB4FBHEZCNW1P3VWHANK4KRNYO&v=20130815&ll=" + 
 			defaults.lat + "," + defaults.lng + "&query=" + self.place(), function( data ) {
 				var places = data.response.venues;  //  Pulls the array of search results from the JSON response 
 				console.log( places );  //  Test . . . . 
 				//  Populates 'results' array with venue information stored in 'Place' prototype 
-				self.results.removeAll();  //  Clears previous results
+				self.results.removeAll();  
 				self.infoVisible.removeAll(); 
 				$.each( places, function( index, item ) {
 					var place = new defaults.Place(item.name, item.location.lat, item.location.lng, item.contact.phone, item.url, item.categories[0].pluralName);
-					//var i = 0;
 					self.results.push(place);
 				});
 			console.log(self.results());
 			self.initializeMap(self.results());
 			})
-			.error(function(e) { alert("error"); });  //  Basic error handler
-			return false;   //  DON'T refresh the page!!!
+			.error(function(e) { alert("error"); });  //  Experimental error handler
+			return false;   //  To prevent the default action of the page refreshing 
 		};
 
-		this.addMarkers = function( places, map ) {
-
-  		// The function below is courtesty of a Google Developers example
-			self.markers.removeAll(); //  Clears previous markers
-			var markerLabels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-			var labelIndex = 0;
-			var infowindow = new google.maps.InfoWindow({
-	    					content: ""
-	  				});
-			var infoWindowOpen = false;
-			
-			//  Creates map markers based on associated filter preferences
-			$.each( places, function ( index, item) {
-				//  This function is courtesy of a Google Developers example
-				var toggleBounce = function() {
-		 	 			if (marker.getAnimation() !== null) {
-		    				marker.setAnimation(null);
-		  				} else { 
-		  					marker.setAnimation(google.maps.Animation.BOUNCE);
-  						}
-				}
-				var openInfoWindow = function( item ) {
-		  				
-	  					if (!infoWindowOpen) {
-	  						infowindow.open(map, marker);
-	  						infoWindowOpen = true;
-	  					};
-  					}
-				if (self.categories.indexOf(item.category) !== -1) {  //  Only displays marker if the category is selected
-					var marker = new google.maps.Marker({
-	    				position: {lat: item.lat, lng: item.lng},
-	    				label: markerLabels[labelIndex++ % markerLabels.length],
-	    				animation: google.maps.Animation.DROP,
-	    				map: map
-	  				});
-	  				infowindow.content = '<p>Click list entries for more information</p>' + 
-	    					'<div id="wikipedia-info"></div>' + 
-	    					'<div id="nyt-info"></div>';
-	  				
-	  				//  Animate marker
-	  				//  marker.setAnimation(google.maps.Animation.BOUNCE);
-	  				//  Creates info window with AJAX info  TODO:  [!!]  Populate this with an AJAX request directly
-	  				openInfoWindow( item );
-  					marker.addListener('click', function() {
-					    infowindow.open(map, marker);
-					    toggleBounce();
-					});
-					
-  					self.markers.push(marker);
-  				}
-			})
-  			//console.log(self.markers());
-		};
+		
 
 		//  AJAX request to New York Times website 
 		this.getNYTimes = function ( spot ) {
@@ -236,22 +240,7 @@
 			});
 		};
 		
-		//  opens up the map for the first time 
-		this.initializeMap = function( results ) {
-			var mapOptions = {
-					center: new google.maps.LatLng(defaults.lat, defaults.lng),
-					zoom: 13
-				};
-			
-			var map = new google.maps.Map( defaults.$mapCanvas, mapOptions );
-			
-			//  Prevents undefined error  
-			if ( results ) {
-				//console.log(results);
-				self.addMarkers(results, map);
-			};
-	
-		};
+		
 		//  Test function
 		this.getInfo = function() {
 			console.log(this.name);
@@ -263,7 +252,7 @@
 			self.initializeMap( defaults );
 		}
 
-		//  [!!]  Add a function to push each default to self.results(), thus populating the list initially;
+		//  Populates list upon initial rendering 
 		this.addDefaultList = function ( defaults ) {
 				$.each( defaults, function( index, item ) {
 					self.results.push( item );
@@ -271,16 +260,14 @@
 				console.log( self.results() );
 			}
     };
+
     //  Open up the map at the default location and zoom
-    
     var render = (function() {
     	var hood = new neighborhoodViewModel();
     	var	myData = JSON.parse(defaultPlaces);
-
     	ko.applyBindings( hood ); 
 	    hood.addDefaultMarkers(myData);
 	    hood.addDefaultList(myData);
-	    //console.log(hood.categories());
     })();
     
 })();

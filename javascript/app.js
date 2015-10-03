@@ -83,7 +83,7 @@
 			self.initializeMap( results );
 		};
 
-		this.filterList = function(data) {
+		this.filterList = function( data ) {
 
 			console.log(data.place());
 			console.log(self.results());
@@ -128,7 +128,7 @@
 		this.addMarkers = function( places, map ) {
 
   		// The function below is courtesty of a Google Developers example
-			//self.markers.removeAll(); //  Clears previous markers
+			self.markers.removeAll(); //  Clears previous markers
 			var markerLabels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 			var labelIndex = 0;
 			var infowindow = new google.maps.InfoWindow({

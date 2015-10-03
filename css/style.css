@@ -36,3 +36,7 @@ h2 {
 thead {
 	font-weight: bold;
 }
+
+td {
+	width: 150px;
+}

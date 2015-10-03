@@ -7,7 +7,7 @@
 //		  [  ]  De-couple the AJAX info from list clicking, make it so the AJAX info is available for info window immediately
 //  [  ]  Provide data about what the list view info represents (and remove reference to list view from info window)
 //  [  ]  " ... the "search function" needs to perform like your "filter markers" function. "
-//  [  ]  The search function should filter the list down as you type into it (try using textInput binding)
+//  [  ]  The search function should filter the list down as you type into it (try using 'visible' binding)
 
 (function() {
 	"use strict";
@@ -38,7 +38,7 @@
 	function neighborhoodViewModel() {
 		var self = this;  //  Allows 'this' to be used within nested scopes
 		
-		this.place = ko.observable();  //  Bound to the place that the user searches for later use in functions 
+		this.place = ko.observable("Type a place nearby and hit the 'space' bar to filter . . . ");  //  Bound to the place that the user searches for later use in functions 
 		this.results = ko.observableArray();  //  Tracks the places in an observable 'results' array 
 		this.markers = ko.observableArray();  //  This is never used . . . TODO:  [  ]  Turn markers into accessible objects or variables 
 		this.categories = ko.observableArray(["Coffee Shops", "Salons / Barber Shops", "Pizza Places", "Food Courts", "Chinese Restaurants"]);  //  observable array for checked categories
@@ -83,6 +83,26 @@
 			self.initializeMap( results );
 		};
 
+		this.filterList = function(data) {
+
+			console.log(data.place());
+			console.log(self.results());
+			$.each( self.results(), function( index, item) {
+				if (item.name.toLowerCase().search(data.place().toLowerCase()) !== -1) {
+					console.log('query contained in list');
+					//TODO  [  ]  Use the 'visible' binding to control wether list items show up or not
+					//IDEA:  The visible trait should be paired to whether or not the name is returned in the
+					//		'results' observable, rather than whether or not the category is in the 'categories'
+					//       array.  
+				} else {
+					/*  Do something else . . . ? */ 
+				}
+			})
+			
+			return true;
+
+		};
+
 		//  AJAX request to Foursquare bound to user clicking 'Search' button
 		this.getPlace = function() { 
 
@@ -108,7 +128,7 @@
 		this.addMarkers = function( places, map ) {
 
   		// The function below is courtesty of a Google Developers example
-			self.markers.removeAll(); //  Clears previous markers
+			//self.markers.removeAll(); //  Clears previous markers
 			var markerLabels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 			var labelIndex = 0;
 			var infowindow = new google.maps.InfoWindow({

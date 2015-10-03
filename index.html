@@ -15,7 +15,7 @@
 			<div class="col-md-6 container">
 				<form name="mapForm">
 					<div id="location">
-						<b>Click 'search'</b> to search for places (e.g. 'coffee shops') to generate map markers.  <b>Hit 'enter'</b> after typing a query to filter markers based on the query rather than category.  <input class="field" type="text" name="place" data-bind="value: place"><br>
+						<b>Click 'search'</b> to search for places (e.g. 'coffee shops') to generate map markers.  <b>Hit 'enter'</b> after typing a query to filter markers based on the query rather than category.  <input class="field" type="text" name="place" data-bind="textInput: place, event: { keypress: filterList }"><br>
 						<input type="submit" value="Filter Markers" data-bind="click: filter">
 						<input type="submit" value ="Search" data-bind="click: getPlace"><br>
 						<span><b>List view filter</b> (checking none hides all results)</span><br>

@@ -8,8 +8,8 @@ Potential Issues/Questions:
 
 -When I initially render my page, only the one of the map markers is visible initially, and I'm not sure why this is happening.  Any insights?
 
-*(This issue below was recently fixed)*
-~-I'm still struggling to build the Wikipedia-calling AJAX request into the click of the map marker.  I attempted to pair my self.getWiki() function with the event listener on the map marker (you'll find in my code that this is the case), but it does not demonstrate the desired behavior when clicked.  Right now, I can only get these to display when I click the associated item in the list view.~
+*(The issue below was recently fixed)*
+~~-I'm still struggling to build the Wikipedia-calling AJAX request into the click of the map marker.  I attempted to pair my self.getWiki() function with the event listener on the map marker (you'll find in my code that this is the case), but it does not demonstrate the desired behavior when clicked.  Right now, I can only get these to display when I click the associated item in the list view.~~
 
 -Can I make the label move with the animation (for example, if I pick a letter from the alphabet to label a marker, is there a way I can make it move as the marker is animated?)
 

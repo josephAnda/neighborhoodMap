@@ -3,7 +3,7 @@
 //  [!!]  Turn the map into a background element or put the text in a scrollable box for overflow
 //  [  ]  Fix markers
 //		  [  ]  Have markers labels move with animation
-//		  [  ]  Automate the cessation of animation (eliminate the need to click to make it stop)
+//		  [!!]  Automate the cessation of animation (eliminate the need to click to make it stop)
 //		  [  ]  De-couple the AJAX info from list clicking, make it so the AJAX info is available for info window immediately
 //  [!!]  Provide data about what the list view info represents (and remove reference to list view from info window)
 //  [!!]  " ... the "search function" needs to perform like your "filter markers" function. "
@@ -80,6 +80,7 @@
 		    				marker.setAnimation(null);
 		  				} else { 
 		  					marker.setAnimation(google.maps.Animation.BOUNCE);
+		  					setTimeout(function(){ marker.setAnimation(null); }, 3000);  //  Stops animation
   						}
 				}
 				var openInfoWindow = function( item ) {
@@ -93,7 +94,8 @@
 				if (self.categories.indexOf(item.category) !== -1) {  
 					var marker = new google.maps.Marker({
 	    				position: {lat: item.lat, lng: item.lng},
-	    				label: markerLabels[labelIndex++ % markerLabels.length],
+	    				//TODO  [  ]  Animate the label as well as the marker 
+	    				//label: markerLabels[labelIndex++ % markerLabels.length],
 	    				animation: google.maps.Animation.DROP,
 	    				map: map
 	  				});

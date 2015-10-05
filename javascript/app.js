@@ -108,7 +108,8 @@
   					marker.addListener('click', function() {
 					    infowindow.open(map, marker);
 					    toggleBounce();
-					    self.getWiki( item );  // this is *supposed* to open up the wikipedia article associated with the info window
+					    self.getWiki( item );  // this *works* now!!
+					    
 					});
 					
   					self.markers.push(marker);

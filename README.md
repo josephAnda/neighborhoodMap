@@ -6,7 +6,8 @@ Potential Issues/Questions:
 
 -In respone to the last review, I added an auto-filter (this will filter the list as the user types).  For some reason, the textInput binding I made will only recognize all of the text up to the most recent character entry in the form field.  This is only a minor problem, but troubling.
 
--When I initially render my page, only the one of the map markers is visible initially, and I'm not sure why this is happening.  Any insights?
+*(The issue below was recently fixed)*
+~~-When I initially render my page, only the one of the map markers is visible initially, and I'm not sure why this is happening.  Any insights?~~  (The above problem was fixed by switching the order in which the default markers and list were added.)
 
 *(The issue below was recently fixed)*
 ~~-I'm still struggling to build the Wikipedia-calling AJAX request into the click of the map marker.  I attempted to pair my self.getWiki() function with the event listener on the map marker (you'll find in my code that this is the case), but it does not demonstrate the desired behavior when clicked.  Right now, I can only get these to display when I click the associated item in the list view.~~

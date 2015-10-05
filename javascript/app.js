@@ -1,13 +1,7 @@
-//  TODO:
-//  [!!]  Render a list initially that matches the default markers
-//  [!!]  Turn the map into a background element or put the text in a scrollable box for overflow
 //  [  ]  Fix markers
 //		  [  ]  Have markers labels move with animation
 //		  [!!]  Automate the cessation of animation (eliminate the need to click to make it stop)
-//		  [  ]  De-couple the AJAX info from list clicking, make it so the AJAX info is available for info window immediately
-//  [!!]  Provide data about what the list view info represents (and remove reference to list view from info window)
-//  [!!]  " ... the "search function" needs to perform like your "filter markers" function. "
-//  [!!]  The search function should filter the list down as you type into it (try using 'visible' binding)
+//		  [!!]  De-couple the AJAX info from list clicking, make it so the AJAX info is available for info window immediately
 
 (function() {
 	"use strict";
@@ -30,7 +24,6 @@
 			this.index = index;
 			this.wiki = "";
 			this.nyt = "";
-			
 		},
 	};	
 
@@ -74,6 +67,7 @@
 			
 			//  Creates map markers based on associated user query 
 			$.each( places, function ( index, item) {
+
 				//  This function is courtesy of a Google Developers example for animation 
 				var toggleBounce = function() {
 		 	 			if (marker.getAnimation() !== null) {
@@ -99,6 +93,7 @@
 	    				animation: google.maps.Animation.DROP,
 	    				map: map
 	  				});
+	  				console.log("Marker number " + index + " created . . . ");
 	  				infowindow.content = '<p></p>' + 
 	    					'<div id="wikipedia-info"></div>' + 
 	    					'<div id="nyt-info"></div>';
@@ -116,7 +111,7 @@
   				}
 
 			})
-  			console.log(self.markers());
+  			//console.log(self.markers());
 		};
 		
 		//  Compares query with 'results' observable and initializes a map w/out AJAX request
@@ -147,8 +142,6 @@
 			self.infoVisible.removeAll();
 			self.infoVisible.push(place.name);
 			self.initializeMap ( results );
-
-			
 		};
 
 		//  Filters current list items as the user types
@@ -185,8 +178,6 @@
 			.error(function(e) { alert("error"); });  //  Experimental error handler
 			return false;   //  To prevent the default action of the page refreshing 
 		};
-
-		
 
 		//  AJAX request to New York Times website 
 		this.getNYTimes = function ( spot ) {
@@ -245,12 +236,10 @@
 			});
 		};
 		
-		
 		//  Test function
 		this.getInfo = function() {
 			console.log(this.name);
 		};
-
 
 		//  Test function below to add default markers to database and map
 		this.addDefaultMarkers = function ( defaults ) {
@@ -271,8 +260,7 @@
     	var hood = new neighborhoodViewModel();
     	var	myData = JSON.parse(defaultPlaces);
     	ko.applyBindings( hood ); 
-	    hood.addDefaultMarkers(myData);
-	    hood.addDefaultList(myData);
+    	hood.addDefaultList(myData);  //  Adds list view
+	    hood.addDefaultMarkers(myData);  //  Adds markers
     })();
-    
 })();

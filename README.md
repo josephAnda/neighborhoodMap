@@ -1,25 +1,25 @@
 Neighborhood Mapper V.1.1.0 by Joseph Anda
 
-NEW NOTES TO GRADER:
+*New Notes to Grader*
 
-Is it possible to keep track of map markers as DOM elements?  This would allow me to pair a ko.observable with
-the current marker, and update it based on the place that it matches.  Specifically, I would like to create a infoWindow with information based on the associated map marker (rather than relying on the user clicking a list entry associated with that map marker).  As it stands, I can only take full advantage of ko.observables when manipulating DOM elements (like list entries), but not with map markers (like the 5 markers that I populate the page with by default).  
+Potential Issues/Questions:
 
-Insightful commentary (thank you).  
+-In respone to the last review, I added an auto-filter (this will filter the list as the user types).  For some reason, the textInput binding I made will only recognize all of the text up to the most recent character entry in the form field.  This is only a minor problem, but troubling.
 
-NOTABLE CHANGES:
+-When I initially render my page, only the one of the map markers is visible initially, and I'm not sure why this is happening.  Any insights?
 
---All five markers load initially
---Results can be filtered without an AJAX request (hit 'enter' rather than clicking 'search')
---Info windows now feature more information, which is altered via the AJAX requests themselves 
---The opening of an info window is bundled in a separate function 
---Clicking list entries open associated markers, with an info window
---Markers feature animation 
---One window opens at a time
---A responsive meta tag has been added
---Error handling functions added to the AJAX requests 
+-I'm still struggling to build the Wikipedia-calling AJAX request into the click of the map marker.  I attempted to pair my self.getWiki() function with the event listener on the map marker (you'll find in my code that this is the case), but it does not demonstrate the desired behavior when clicked.  Right now, I can only get these to display when I click the associated item in the list view.
 
-USING THE MAPPER:
+-Can I make the label move with the animation (for example, if I pick a letter from the alphabet to label a marker, is there a way I can make it move as the marker is animated?)
+
+
+*Notable Changes*
+
+-  More compact List View
+-  Animation ends automatically for clicked markers after a period of time.
+-  Removed Marker labels
+
+*Using the Mapper*
 
 0)  Open the file titled 'index.html' in your web browser.  
 1)  Search a type of venue by entering it into the search bar (e.g., 'coffee shops') and clicking the 'search' button.
@@ -28,7 +28,7 @@ USING THE MAPPER:
 4)  Search new venues by entering another query into the search bar.  Only entries matching checked categories will populate
 
 
-ABOUT NEIGHBORHOOD MAPPER
+*About Neighborhood Mapper*
 
 This project is intended to showcase a few major front-end development-related skills:
 

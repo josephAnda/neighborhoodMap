@@ -113,8 +113,9 @@
 					
   					self.markers.push(marker);
   				}
+
 			})
-  			//console.log(self.markers());
+  			console.log(self.markers());
 		};
 		
 		//  Compares query with 'results' observable and initializes a map w/out AJAX request

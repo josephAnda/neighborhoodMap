@@ -13,21 +13,23 @@
 		</div>
 		<div class="row">
 			<div class="col-md-6 container">
-				<form name="mapForm">
-					<div id="location">
-						<b>Click 'get markers'</b> to search for places (e.g. 'coffee shops') and generate map markers.  <b>Hit 'enter'</b> after typing a query to filter markers based on the query rather than category.  <b>Search</b> will filter the current list.  Typing into the taskbar will auto-filter the current list for matches.  <input class="field" type="text" name="place" data-bind="textInput: place, event: { keypress: filterList }"><br>
-						<input type="submit" value="Get Markers" data-bind="click: getMarkers">
-						<input type="submit" value ="Search" data-bind="click: filter"><br>
-						<span><b>List view filter</b> (checking none hides all results)</span><br>
-						<input type="checkbox" name="spot1" value="Coffee Shops" data-bind="checked:categories" > Coffee Shops
-						<input type="checkbox" name="spot2" value="Salons / Barber Shops" data-bind="checked:categories"> Salons / Barber Shops
-						<input type="checkbox" name="spot3" value="Pizza Places" data-bind="checked:categories"> Pizza Places
-						<input type="checkbox" name="spot4" value="Food Courts" data-bind="checked:categories"> Food Courts<br>
-						<input type="checkbox" name="spot5" value="Chinese Restaurants" data-bind="checked:categories">Chinese Restaurants<br>
+				<nav class="navbar navbar-default">
+					<form name="mapForm">
+						<div id="location">
+							<b>Click 'get markers'</b> to search for places (e.g. 'coffee shops') and generate map markers.  <b>Hit 'enter'</b> after typing a query to filter markers based on the query rather than category.  <b>Search</b> will filter the current list.  Typing into the taskbar will auto-filter the current list for matches.  <input class="field" type="text" name="place" data-bind="textInput: place, event: { keypress: filterList }"><br>
+							<input type="submit" value="Get Markers" data-bind="click: getMarkers">
+							<input type="submit" value ="Search" data-bind="click: filter"><br>
+							<span><b>List view filter</b> (checking none hides all results)</span><br>
+							<input type="checkbox" name="spot1" value="Coffee Shops" data-bind="checked:categories" > Coffee Shops
+							<input type="checkbox" name="spot2" value="Salons / Barber Shops" data-bind="checked:categories"> Salons / Barber Shops
+							<input type="checkbox" name="spot3" value="Pizza Places" data-bind="checked:categories"> Pizza Places
+							<input type="checkbox" name="spot4" value="Food Courts" data-bind="checked:categories"> Food Courts<br>
+							<input type="checkbox" name="spot5" value="Chinese Restaurants" data-bind="checked:categories">Chinese Restaurants<br>
+							
+						</div>
 						
-					</div>
-					
-				</form>
+					</form>
+				</nav>
 			</div>
 			<div class="col-md-6" style="overflow: auto; height:175px; width:500px; border:1px solid #ccc;">
 				<table>

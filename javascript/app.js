@@ -1,7 +1,11 @@
-//  [  ]  Fix markers
-//		  [  ]  Have markers labels move with animation
-//		  [!!]  Automate the cessation of animation (eliminate the need to click to make it stop)
-//		  [!!]  De-couple the AJAX info from list clicking, make it so the AJAX info is available for info window immediately
+//  TODO
+//  [!!]  Make the display responsive to different viewport sizes  (I wrapped the top form in the navbar class)
+//  [  ]  Fix marker and search bar issues (?)
+//  [!!]  Write a fallback for the Google Map (in case it fails to load properly)
+//  [  ]  Use marker.setVisible to alter markers in view
+//  [  ]  " There are errors when trying to Get Markers for something without results like the word "chirp". 
+//        Errors also happen when trying to regular search on an empty list." (Fix search bar)
+//  [  ]  Simplify the search function (see reviewer comments)
 
 (function() {
 	"use strict";
@@ -42,16 +46,20 @@
 		
 		//  Generates a map with the associated markers 
 		this.initializeMap = function( results ) {
-			var mapOptions = {
-					center: new google.maps.LatLng(defaults.lat, defaults.lng),
-					zoom: 13
+			if (typeof google === 'undefined') {  
+				alert("error loading Google Maps");  //  Fallback for if Google Maps API fails
+			} else {
+				var mapOptions = {
+						center: new google.maps.LatLng(defaults.lat, defaults.lng),
+						zoom: 13
+					};
+				
+				var map = new google.maps.Map( defaults.$mapCanvas, mapOptions );
+				
+				if ( results ) {
+					self.addMarkers(results, map);
 				};
-			
-			var map = new google.maps.Map( defaults.$mapCanvas, mapOptions );
-			
-			if ( results ) {
-				self.addMarkers(results, map);
-			};
+			}
 		};
 
 		//  Generates Google Map markers

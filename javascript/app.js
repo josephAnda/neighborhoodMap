@@ -1,6 +1,7 @@
 //  TODO
 //  [!!]  Make the display responsive to different viewport sizes  (I wrapped the top form in the navbar class)
 //  [  ]  Fix marker and search bar issues (?)
+//  [  ]  Fix info window bugs
 //  [!!]  Write a fallback for the Google Map (in case it fails to load properly)
 //  [  ]  Use marker.setVisible to alter markers in view
 //  [  ]  " There are errors when trying to Get Markers for something without results like the word "chirp". 
@@ -44,17 +45,19 @@
 		this.wikiData = ko.observable("Click a location in the list for more information!");  //  This changes to display the currently selected venue's wiki data
 		this.nytData = ko.observable("null");  //  This changes to show the currently selected venue's Times data
 		
+		var mapOptions = {
+			center: new google.maps.LatLng(defaults.lat, defaults.lng),
+			zoom: 13
+		};
+				
+		var map = new google.maps.Map( defaults.$mapCanvas, mapOptions );
+
 		//  Generates a map with the associated markers 
 		this.initializeMap = function( results ) {
 			if (typeof google === 'undefined') {  
 				alert("error loading Google Maps");  //  Fallback for if Google Maps API fails
 			} else {
-				var mapOptions = {
-						center: new google.maps.LatLng(defaults.lat, defaults.lng),
-						zoom: 13
-					};
 				
-				var map = new google.maps.Map( defaults.$mapCanvas, mapOptions );
 				
 				if ( results ) {
 					self.addMarkers(results, map);
@@ -71,7 +74,7 @@
 			var infowindow = new google.maps.InfoWindow({
 	    					content: ""
 	  				});
-			var infoWindowOpen = false;
+			var infoWindowOpen = true;  //  < --- Fixing info window bug
 			
 			//  Creates map markers based on associated user query 
 			$.each( places, function ( index, item) {
@@ -82,14 +85,14 @@
 		    				marker.setAnimation(null);
 		  				} else { 
 		  					marker.setAnimation(google.maps.Animation.BOUNCE);
-		  					setTimeout(function(){ marker.setAnimation(null); }, 3000);  //  Stops animation
+		  					setTimeout(function(){ marker.setAnimation(null); }, 1700);  //  Stops animation
   						}
 				}
 				var openInfoWindow = function( item ) {
 		  				
 	  					if (!infoWindowOpen) {
 	  						infowindow.open(map, marker);
-	  						infoWindowOpen = true;
+	  						infoWindowOpen = true;  
 	  					};
   					}
   				//  Only displays marker if the category is selected

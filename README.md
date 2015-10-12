@@ -1,25 +1,21 @@
 Neighborhood Mapper V.1.1.0 by Joseph Anda
 
-*New Notes to Grader*
+*New Notes to Grader and Notable changes*
 
-Potential Issues/Questions:
+--Fixed the viewport responsivity issue by adding the navbar class to DOM elements
+--Paired list clicking with info window updating and opening
+--Fixed info-window bugs (such as AJAX info from wrong venue populating window)
+--Wrote fallback method for googel Map
+--Hide markers with 'filter' function via setVisible() method
+--Fixed errors returned when user makes empty or nonsensical query
+--Simplified the search functions
+--Integrated Foursquare (via getMarkers method)
+--Used setTimeout() to ensure error handler works properly in event of no internet connection (waits 10 seconds)
 
--In respone to the last review, I added an auto-filter (this will filter the list as the user types).  For some reason, the textInput binding I made will only recognize all of the text up to the most recent character entry in the form field.  This is only a minor problem, but troubling.
+*Potential Issues*
 
-*(The issue below was recently fixed)*
-~~-When I initially render my page, only the one of the map markers is visible initially, and I'm not sure why this is happening.  Any insights?~~  (The above problem was fixed by switching the order in which the default markers and list were added.)
-
-*(The issue below was recently fixed)*
-~~-I'm still struggling to build the Wikipedia-calling AJAX request into the click of the map marker.  I attempted to pair my self.getWiki() function with the event listener on the map marker (you'll find in my code that this is the case), but it does not demonstrate the desired behavior when clicked.  Right now, I can only get these to display when I click the associated item in the list view.~~
-
--Can I make the label move with the animation (for example, if I pick a letter from the alphabet to label a marker, is there a way I can make it move as the marker is animated?)
-
-
-*Notable Changes*
-
--  More compact List View
--  Animation ends automatically for clicked markers after a period of time.
--  Removed Marker labels
+--The Last grader lamented that my maps were not loading asynchronously, which may still be a problem (but I have since
+refactored).  I hope that I am closer to a 'Meets Specifications' nonetheless!  
 
 *Using the Mapper*
 

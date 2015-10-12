@@ -33,10 +33,22 @@ h2 {
     clear: both;
 }
 
-thead {
+thead, p#header {
 	font-weight: bold;
 }
 
+tr:nth-child(even) {
+	background: #CCC
+}
+
+tr:nth-child(odd) {
+	background: #FFF
+}
+
+p#subheader {
+	text-decoration: underline;
+}
+
 td {
-	width: 150px;
+	width: 400px;
 }

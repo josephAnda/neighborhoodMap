@@ -16,10 +16,10 @@
 				<nav class="navbar navbar-default">
 					<form name="mapForm">
 						<div id="location">
-							<b>Click 'get markers'</b> to search for places (e.g. 'coffee shops') and generate map markers.  <b>Hit 'enter'</b> after typing a query to filter markers based on the query rather than category.  <b>Search</b> will filter the current list.  Typing into the taskbar will auto-filter the current list for matches.  <input class="field" type="text" name="place" data-bind="textInput: place, event: { keypress: filterList }"><br>
+							Type in a query and <b>Click 'get markers'</b> (or hit enter) to search for new venues.  <b>Filter Markers</b> will leave only map markers that match the query.  <input class="field" type="text" name="place" data-bind="textInput: place, event: { keypress: console.log('filterList') }"><br>
 							<input type="submit" value="Get Markers" data-bind="click: getMarkers">
-							<input type="submit" value ="Search" data-bind="click: filter"><br>
-							<span><b>List view filter</b> (checking none hides all results)</span><br>
+							<input type="submit" value ="Filter Markers" data-bind="click: filter"><br>
+							<span>The <b>list view filter</b> below will filter the show/hide list items by category (checking none hides all results)</span><br>
 							<input type="checkbox" name="spot1" value="Coffee Shops" data-bind="checked:categories" > Coffee Shops
 							<input type="checkbox" name="spot2" value="Salons / Barber Shops" data-bind="checked:categories"> Salons / Barber Shops
 							<input type="checkbox" name="spot3" value="Pizza Places" data-bind="checked:categories"> Pizza Places
@@ -37,17 +37,12 @@
 						<tr>
 							<td>Location</td>
 							<td>Phone Number</td>
-							<td>Wikipedia Articles</td>
 						</tr>
 					</thead>
 					<tbody data-bind="foreach: results">
-						<tr data-bind="visible: $parent.categories.indexOf(category) != -1, click: $parent.getWiki($data)">
-							<td data-bind="text: name, click: $parent.toggleVisible($data)," style="width: 150px"></td>
-							<td data-bind="text: phone" style="width: 150px"></td>
-							<td data-bind="value: name, visible: $parent.infoVisible.indexOf(name) != -1, html: $parent.wikiData, click: $parent.getNYTimes">
-								<button type="button">Open News Articles</button>
-							</td>
-							<td data-bind="visible: $parent.infoVisible.indexOf(name) != -1, html: $parent.nytData"></td>
+						<tr data-bind="visible: $parent.categories.indexOf(category) != -1, click: $parent.updateInfoWindow($data.marker, $data, $parent.infoWindow())">
+							<td data-bind="text: name" ></td>
+							<td data-bind="text: phone" ></td>
 						</tr>
 					</tbody>
 				</table>

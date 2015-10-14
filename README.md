@@ -1,16 +1,12 @@
-Neighborhood Mapper V.1.1.0 by Joseph Anda
+Neighborhood Mapper V.1.3.0 by Joseph Anda
+
+QUESTIONS:
+
+
 
 *New Notes to Grader and Notable changes*
 
---Fixed the viewport responsivity issue by adding the navbar class to DOM elements
---Paired list clicking with info window updating and opening
---Fixed info-window bugs (such as AJAX info from wrong venue populating window)
---Wrote fallback method for googel Map
---Hide markers with 'filter' function via setVisible() method
---Fixed errors returned when user makes empty or nonsensical query
---Simplified the search functions
---Integrated Foursquare (via getMarkers method)
---Used setTimeout() to ensure error handler works properly in event of no internet connection (waits 10 seconds)
+-The last reviewer said "Your app is almost completely responsive. In the Google Nexus 5 view, the info window can be cut off at the top at times. An easy solution to this would be to set a max-height attribute to the info window and add an overflow-y:scroll."  In response, I added a div with max-height and overflow properties for the info window. 
 
 *Potential Issues*
 

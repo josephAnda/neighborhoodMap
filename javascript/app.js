@@ -1,15 +1,17 @@
 //  TODO
-//  [!!]  Make the display responsive to different viewport sizes  (I wrapped the top form in the navbar class)
-//  [!!]  Pair the list click with the window opening (functionality already exists)
-//  [!!]  Fix info window bugs
-//  [!!]  Write a fallback for the Google Map (in case it fails to load properly)
-//  [!!]  Use marker.setVisible to alter markers in view
-//  [!!]  " There are errors when trying to Get Markers for something without results like the word "chirp". 
-//        Errors also happen when trying to regular search on an empty list." (Fix search bar)
-//  [!!]  Simplify the search function (see reviewer comments)
-//  [!!]  Integrate the foursquare info 
-//  [!!]  Use setTimeout() to ensure error handler works properly in event of no internet connection (that is, 
-//   	  make a decision as to how long the page will wait for the maps to load before deciding that there's an error
+//  [!!]  Make a fully responsive layout (via y-overflow, etc.)
+//  [!!]  Verify full responsive nature (and what that means)
+//  [!!]  Figure out why scroll bar isn't showing up
+//  [!!]  'Return' should default to 'filter markers'
+//  [!!]  'Filter Markers' should filter the list view
+//  [!!]  Add a method to restore the default list (if getMarkers clears list, for example)
+//  [  ]  Use jQuery only when making AJAX requests
+//  [  ]  Add error handling for the Foursquare request
+//  [  ]  Load Google Maps Asynchronously 
+//  [  ]  Fix how the info window loads up initially
+//  [  ]  Populate the info window with Foursquare info
+//  [  ]  Refine the New York Times search results in the info window
+//  [  ]  Run app.js through jshint
 
 
 (function() {
@@ -33,6 +35,7 @@
 			this.index = index;
 			this.wiki = "";
 			this.nyt = "";
+			this.visible = true;
 		},
 	};	
 
@@ -40,22 +43,24 @@
 	function neighborhoodViewModel() {
 		var self = this;  //  Allows 'this' to be used within nested scopes
 		
-		this.place = ko.observable("");  //  User query in the search bar 
-		this.results = ko.observableArray();  //  Stores the 'place' objects
-		this.markers = ko.observableArray();  //  Stores markers
+		self.place = ko.observable("");  //  User query in the search bar 
+		self.results = ko.observableArray();  //  Stores the 'place' objects
+		self.markers = ko.observableArray();  //  Stores markers
 		//  Observable array for checked categories
-		this.categories = ko.observableArray(["Coffee Shops", "Salons / Barber Shops", "Pizza Places", "Food Courts", "Chinese Restaurants"]); 
-		this.tests = ko.observableArray();  //  Never used, but may be accessed in later versions 
-		this.infoVisible = ko.observableArray();  //  Determines whether or not the list view shows extra AJAX info
-		this.wikiData = ko.observable("Click a location in the list for more information!");  //  This changes to display the currently selected venue's wiki data
-		this.nytData = ko.observable("null");  //  This changes to show the currently selected venue's Times data
-		this.infoWindow = ko.observable(new google.maps.InfoWindow({
-	    					content: '<p id="header"></p>' + 
+		self.categories = ko.observableArray(["Coffee Shops", "Salons / Barber Shops", "Pizza Places", "Food Courts", "Chinese Restaurants"]); 
+		self.tests = ko.observableArray();  //  Never used, but may be accessed in later versions 
+		self.infoVisible = ko.observableArray();  //  Determines whether or not the list view shows extra AJAX info
+		self.visibleEntries = ko.observableArray();  //  Controls the state of the list view
+		self.wikiData = ko.observable("Click a location in the list for more information!");  //  This changes to display the currently selected venue's wiki data
+		self.nytData = ko.observable("null");  //  This changes to show the currently selected venue's Times data
+		self.infoWindow = ko.observable(new google.maps.InfoWindow({
+	    					content: '<div id="infowindow">' + '<p id="header"></p>' + 
 	    					'<p id="subheader">Wikipedia Snippet:</p>' +
 	    					'<div id="wikipedia-info"></div>' + 
 	    					'<p id="subheader">New York Times Snippet:</p>' +
-	    					'<div id="nyt-info"></div>'
+	    					'<div id="nyt-info"></div>' + '</div>'
 	  						}));
+
 		var tracker = 0;
 		var mapOptions = {
 			center: new google.maps.LatLng(defaults.lat, defaults.lng),
@@ -133,6 +138,7 @@
 	  				bindClick( marker, item, self.infoWindow() ) ;
   					self.markers.push(item.marker);
 			})
+
   			//console.log(self.markers());
 		};
 
@@ -151,9 +157,16 @@
 				item.marker.visible = false;
 				if (item.name.toLowerCase().search(self.place().toLowerCase()) !== -1) {
 					item.marker.setVisible(true);
+					//  Returns entry to the list view if it matches the query but is not displayed int he list
+					if (self.visibleEntries.indexOf(item.name) == -1) { 
+						self.visibleEntries.push(item.name);
+					}
 					console.log(item.marker);
 				} else {
 					item.marker.setVisible(false);
+					self.visibleEntries.remove(item.name);
+					console.log("visibleEntries looks like this: " + self.visibleEntries());
+					console.log("The item name is " + item.name);
 					console.log(item.marker);
 				}
 			});
@@ -287,15 +300,21 @@
 		//  Test function below to add default markers to database and map
 		this.addDefaultMarkers = function ( defaults ) {
 			self.initializeMap( defaults );
+
 		}
 
 		//  Populates list upon initial rendering.  self.results() is bound to the list items via knockout
 		this.addDefaultList = function ( defaults ) {
 				$.each( defaults, function( index, item ) {
 					self.results.push( item );
+					self.visibleEntries.push( item.name );
+					//console.log("This item's 'visible' property is " + item.visible); //Add visibility attribute to defaults
+					console.log("The number " + index + " entry in the visibleEntries array is " + self.visibleEntries()[index]);
 				});
+				self.infoWindow().close();  //  [  ]  Figure out why this doesn't work
 				console.log( self.results() );
 			}
+
     };
 
     //  Open up the map at the default location and zoom
@@ -305,5 +324,7 @@
     	ko.applyBindings( hood ); 
 	    hood.addDefaultMarkers(myData);  //  Adds markers
     	hood.addDefaultList(myData);  //  Adds list
+
     })();
+    
 })();

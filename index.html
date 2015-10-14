@@ -17,14 +17,16 @@
 					<form name="mapForm">
 						<div id="location">
 							Type in a query and <b>Click 'get markers'</b> (or hit enter) to search for new venues.  <b>Filter Markers</b> will leave only map markers that match the query.  <input class="field" type="text" name="place" data-bind="textInput: place, event: { keypress: console.log('filterList') }"><br>
-							<input type="submit" value="Get Markers" data-bind="click: getMarkers">
-							<input type="submit" value ="Filter Markers" data-bind="click: filter"><br>
+							<input type="submit" value ="Filter Markers" data-bind="click: filter">
+							<input type="submit" value="Reset"> <!--data-bind="click: getMarkers"--><br>
+						<!--  [  ]  Use the search bar for list filtering 
 							<span>The <b>list view filter</b> below will filter the show/hide list items by category (checking none hides all results)</span><br>
 							<input type="checkbox" name="spot1" value="Coffee Shops" data-bind="checked:categories" > Coffee Shops
 							<input type="checkbox" name="spot2" value="Salons / Barber Shops" data-bind="checked:categories"> Salons / Barber Shops
 							<input type="checkbox" name="spot3" value="Pizza Places" data-bind="checked:categories"> Pizza Places
 							<input type="checkbox" name="spot4" value="Food Courts" data-bind="checked:categories"> Food Courts<br>
 							<input type="checkbox" name="spot5" value="Chinese Restaurants" data-bind="checked:categories">Chinese Restaurants<br>
+						-->
 							
 						</div>
 						
@@ -40,7 +42,8 @@
 						</tr>
 					</thead>
 					<tbody data-bind="foreach: results">
-						<tr data-bind="visible: $parent.categories.indexOf(category) != -1, click: $parent.updateInfoWindow($data.marker, $data, $parent.infoWindow())">
+						<!--In the binding below, simply checking to see if an entry is defined should work for the visible binding (i.e., $parent.visibleEntries(name), should work for checking if the entry should be visible.  But it only works for the first entry.  The goal is to use the visibleEntries array to control which list entries are visible.  Why do I need to explicitly check via the indexOf method?)  -->
+						<tr data-bind="visible: $parent.visibleEntries.indexOf(name) !== -1, click: $parent.updateInfoWindow($data.marker, $data, $parent.infoWindow())">
 							<td data-bind="text: name" ></td>
 							<td data-bind="text: phone" ></td>
 						</tr>

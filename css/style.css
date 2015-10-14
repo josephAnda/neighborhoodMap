@@ -38,11 +38,11 @@ thead, p#header {
 }
 
 tr:nth-child(even) {
-	background: #CCC
+	background: #ccc;
 }
 
 tr:nth-child(odd) {
-	background: #FFF
+	background: #fff;
 }
 
 p#subheader {
@@ -51,4 +51,9 @@ p#subheader {
 
 td {
 	width: 400px;
+}
+
+#infowindow {
+	max-height: 140px;
+    overflow-y: scroll;
 }

@@ -5,22 +5,27 @@
 //  [!!]  'Return' should default to 'filter markers'
 //  [!!]  'Filter Markers' should filter the list view
 //  [!!]  Add a method to restore the default list (if getMarkers clears list, for example)
-//  [  ]  Use jQuery only when making AJAX requests
-//  [  ]  Add error handling for the Foursquare request
-//  [  ]  Load Google Maps Asynchronously 
-//  [  ]  Fix how the info window loads up initially
-//  [  ]  Populate the info window with Foursquare info
+//  [!!]  Use jQuery only when making AJAX requests
+//        [!!]  Determine if this specification implies that you have to move jQuery within getWiki to AJAX request itself 
+//  [!!]  Add error handling for the Foursquare request
+//  [!!]  Load Google Maps Asynchronously 
+//  [!!]  Fix how the info window loads up initially
+//  [!!]  Populate the info window with Foursquare info
+//  	  [!!]  Create temporary function to display the details of the Foursquare results and/or bind getMarkers to current
+//        info-window display method
+//  [  ]  Correct the initial info in the info window (or just close it initially)
 //  [  ]  Refine the New York Times search results in the info window
 //  [  ]  Run app.js through jshint
 
 
-(function() {
+var googleSuccess = function() {
 	"use strict";
-
+	//  Check if map object has loaded via script tag in index.html
+	
 	//  Store commonly used constants in this object
 	var defaults = {
 
-		$mapCanvas: $("#map-canvas")[0],  //  Reference to map-canvas div
+		//$mapCanvas: $("#map-canvas")[0],  //  Reference to map-canvas div
 		lat: 37.56, //  Lattitude for Downtown San Mateo
 		lng: -122.32,  //  Longitude for Downtown San Mateo
 		
@@ -40,7 +45,7 @@
 	};	
 
 	//  Holds ViewModel functionality
-	function neighborhoodViewModel() {
+	function NeighborhoodViewModel() {
 		var self = this;  //  Allows 'this' to be used within nested scopes
 		
 		self.place = ko.observable("");  //  User query in the search bar 
@@ -55,6 +60,8 @@
 		self.nytData = ko.observable("null");  //  This changes to show the currently selected venue's Times data
 		self.infoWindow = ko.observable(new google.maps.InfoWindow({
 	    					content: '<div id="infowindow">' + '<p id="header"></p>' + 
+	    					'<p id="formattedAddress"></p>' +
+	    					'<p id="venueType"></p>' +
 	    					'<p id="subheader">Wikipedia Snippet:</p>' +
 	    					'<div id="wikipedia-info"></div>' + 
 	    					'<p id="subheader">New York Times Snippet:</p>' +
@@ -67,7 +74,7 @@
 			zoom: 13
 		};
 				
-		var map = new google.maps.Map( defaults.$mapCanvas, mapOptions );
+		var map = new google.maps.Map( document.getElementById('map-canvas'), mapOptions );
 		
 
 		//  Generates a map with the associated markers 
@@ -75,16 +82,14 @@
 			setTimeout( function() { 
 				if (typeof google === 'undefined') { 
 					alert("Google Maps is taking too long to load, check internet connection");	
-				} else {
-					//alert("All is well!");  <--A primitive test that has passed
-				}
+				} 
 			}, 10000); //  Times out if Google Maps takes too long to load 
 			if (typeof google === 'undefined') {  
-				alert("error loading Google Maps");  //  Fallback for if Google Maps API fails
+				alert("error loading Google Maps");  //  Fallback for if Google Maps API fails despite working connection
 			} else {
 				if ( results ) {
 					self.addMarkers(results, map);
-				};
+				}
 			}
 		};
 	
@@ -108,15 +113,10 @@
 			//  Binds the click of a marker to updating the info window's location
 			var bindClick = function ( marker, item, info ) {
 				marker.addListener('click', function() {
-  						
-  						console.log(info);
-					  
 					    toggleBounce( marker );
 					    self.updateInfoWindow( marker, item, info);
-					    //self.getWiki( item );  // this *works* now!!
-					    
 					});
-			}
+			};
 
 			//  Creates map markers based on associated user query
 			tracker++;
@@ -137,17 +137,18 @@
 	  				console.log(item.marker, item.infoWindow );
 	  				bindClick( marker, item, self.infoWindow() ) ;
   					self.markers.push(item.marker);
-			})
-
-  			//console.log(self.markers());
+			});
 		};
 
 		//  Updates the info window to ensure only one is open at a time and displays the correct info
 		this.updateInfoWindow = function( marker, item, info ) {
-			info.open(map, marker);
+			
 			self.getWiki( item );
 			self.getNYTimes( item );
-		}
+			
+			info.open(map, marker);
+			self.getFourSquare( item );
+		};
 
 		//  Compares query with 'results' observable and initializes a map w/out AJAX request
 		this.filter = function() {
@@ -187,7 +188,7 @@
 			console.log(data.place());
 			console.log(self.results());
 			$.each( self.results(), function( index, item) {
-				if ((item != null) && (item.name.toLowerCase().search(data.place().toLowerCase()) !== -1)) {
+				if ((item !== null) && (item.name.toLowerCase().search(data.place().toLowerCase()) !== -1)) {
 					console.log('query contained in list');  //  Testing . . . 
 				} else {
 					self.results.remove( item );
@@ -198,7 +199,7 @@
 
 		//  AJAX request to Foursquare bound to user clicking 'Get Markers' button.  Also initializes map markers
 		this.getMarkers = function() { 
-			if (self.place() == "") { return false; } //  Catch the empty string
+			if (self.place() === "") { return false; } //  Catch the empty string
 			$.getJSON("https://api.foursquare.com/v2/venues/search?client_id=DFMQLSBHUH2LQAQ3DQYSNSAR3TYCNHQJ3DEIHVKSMK0KBGPJ&client_secret=3J5U50Y3HOGLN3DJDHROLSZB4FBHEZCNW1P3VWHANK4KRNYO&v=20130815&ll=" + 
 			defaults.lat + "," + defaults.lng + "&query=" + self.place(), function( data ) {
 				var places = data.response.venues;  //  Pulls the array of search results from the JSON response 
@@ -211,24 +212,55 @@
 			
 				$.each( places, function( index, item ) {
 					
-						if (item.categories[0] == undefined) { 
+						if (item.categories[0] === undefined) { 
 							item.categories[0] = {
 								pluralName: "Misc"
 							};
 						}
-						
+		
 						console.log("Item categories returns " + item.categories[0].pluralName);
 						var place = new defaults.Place(item.name, item.location.lat, item.location.lng, item.contact.phone, item.url, item.categories[0].pluralName);
-						
 						self.results.push(place);
 					
 				});
 				
-
-			console.log(self.results());
+			//console.log(self.results());
 			self.initializeMap(self.results());
 			})
-			.error(function(e) { alert("error"); });  //  Experimental error handler
+			.error(function() { alert("error"); });  //  Experimental error handler
+			return false;   //  To prevent the default action of the page refreshing 
+		};
+
+		this.getFourSquare = function( spot ) { 
+			if ( spot.name === "" || spot.name === null) { return false; } //  Catch the empty string
+			$.getJSON("https://api.foursquare.com/v2/venues/search?client_id=DFMQLSBHUH2LQAQ3DQYSNSAR3TYCNHQJ3DEIHVKSMK0KBGPJ&client_secret=3J5U50Y3HOGLN3DJDHROLSZB4FBHEZCNW1P3VWHANK4KRNYO&v=20130815&ll=" + 
+			defaults.lat + "," + defaults.lng + "&query=" + spot.name, function( data ) {
+				var places = data.response.venues;  //  Pulls the array of search results from the JSON response 
+				console.log(data.response);
+				//  Populates 'results' array with venue information stored in 'Place' prototype 
+				var $locationDiv = $("#formattedAddress");
+				var $venueTypeDiv = $("#venueType");
+				$locationDiv.html(data.response.venues[0].location.formattedAddress[0]);
+				
+				$venueTypeDiv.html(data.response.venues[0].categories[0].name);
+				$.each( places, function( index, item ) {
+						
+						if (item.categories[0] === undefined) { 
+							item.categories[0] = {
+								pluralName: "Misc"
+							};
+						}
+						//console.log( "This is the number" + " " + index + " item in the array/object containing the FourSquare results:" + item );  //  Test . . . . 
+						//console.log("Item categories returns " + item.categories[0].pluralName);
+						//var place = new defaults.Place(item.name, item.location.lat, item.location.lng, item.contact.phone, item.url, item.categories[0].pluralName);
+						//self.results.push(place);
+					
+				});
+			
+			//console.log(self.results());
+			//self.initializeMap(self.results());
+			})
+			.error(function() { alert("error"); });  //  Experimental error handler
 			return false;   //  To prevent the default action of the page refreshing 
 		};
 
@@ -236,25 +268,33 @@
 		this.getNYTimes = function ( spot ) {
 			var key = "&api-key=6b539ed4808bc69e6e974a036e2de9f2:1:72423609";
 	    	var nytimesApiUrl = "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + spot.name + key;
-	    	var $nytDiv = $("#nyt-info");
 	    	$.getJSON( nytimesApiUrl  , function( data ) {
 	    		var articles = data.response.docs;
 	    		var tags = [];
+	    		var $nytDiv = $("#nyt-info");
+	    
 	    		$.each( articles, function( index, article) {
+	    			if (article.lead_paragraph === null) { 
+	    				article.lead_paragraph = "(No articles found)"; 
+	    			}
+	    			
 	    			var elem = "<li class='article'>" + "<a href=" + article.web_url+">" + article.headline.main + 
                 	"</a>" + "<p>" + article.lead_paragraph +"</p>" + "</li>";
 	    			tags.push( elem );
 	    			spot.nyt = elem;
                 	//$nytElem.append(tags[index]);
             	});
+
             	self.nytData(tags[0]);
+            	
             	$nytDiv.html(self.nytData());
             	console.log(tags);
             	console.log(data);
-	    	}).error(function(e){
+            	console.log("Here is nytData: " + self.nytData());
+	    	}).error(function(){
 	        	console.log('New York Times Articles Could Not Be Loaded');
 	        });
-	    }
+	    };
 		
 		//  Wikipedia request to New York Times website  
 		this.getWiki = function( spot ) {
@@ -266,8 +306,7 @@
 				srsearch: spot.name,
 				srwhat: "text"
 			};
-			var $wikiDiv = $("#wikipedia-info");
-			var $header = $("#header");
+			
 			$.ajax( {
 			    url: remoteUrlWithOrigin,
 			    data: queryData,
@@ -277,14 +316,16 @@
 			    //  'success' function alters the snippet and makes it the current wikiData item
 			    success: function(data) {
 			    	var firstResult = data.query.search[0];
+			    	var $wikiDiv = $("#wikipedia-info");
+					var $header = $("#header");
 			    	if(firstResult !== undefined) {
-			    		if(firstResult.snippet == undefined) {
+			    		if(firstResult.snippet === undefined) {
 			    			firstResult.snippet = "No information found";
 			    		}
 			    		self.wikiData(firstResult.snippet);
-			    	};
+			    	}
 			    	$wikiDiv.html(self.wikiData());   
-			    	$header.html(spot.name)    
+			    	$header.html(spot.name);    
 				},
 				error: function() { 
 					alert('Could not fetch Wiki documents (potentially due to connectivity issues)'); 
@@ -301,7 +342,7 @@
 		this.addDefaultMarkers = function ( defaults ) {
 			self.initializeMap( defaults );
 
-		}
+		};
 
 		//  Populates list upon initial rendering.  self.results() is bound to the list items via knockout
 		this.addDefaultList = function ( defaults ) {
@@ -313,18 +354,20 @@
 				});
 				self.infoWindow().close();  //  [  ]  Figure out why this doesn't work
 				console.log( self.results() );
-			}
-
-    };
+			};
+    }
 
     //  Open up the map at the default location and zoom
     var render = (function() {
-    	var hood = new neighborhoodViewModel();
+    	var hood = new NeighborhoodViewModel();
     	var	myData = JSON.parse(defaultPlaces);
     	ko.applyBindings( hood ); 
 	    hood.addDefaultMarkers(myData);  //  Adds markers
     	hood.addDefaultList(myData);  //  Adds list
-
+    	
     })();
-    
-})();
+   
+   
+};
+
+var googleError = function() { alert("It seems Google Maps has failed to load (Try checking internet connection and/or script url)"); };

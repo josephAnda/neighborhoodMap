@@ -42,7 +42,6 @@
 						</tr>
 					</thead>
 					<tbody data-bind="foreach: results">
-						<!--In the binding below, simply checking to see if an entry is defined should work for the visible binding (i.e., $parent.visibleEntries(name), should work for checking if the entry should be visible.  But it only works for the first entry.  The goal is to use the visibleEntries array to control which list entries are visible.  Why do I need to explicitly check via the indexOf method?)  $parent.visibleEntries.indexOf(name) !== -1-->
 						<tr data-bind="visible: $parent.visibleEntries.indexOf(name) !== -1, click: $parent.updateInfoWindow($data.marker, $data, $parent.infoWindow())">
 							<td data-bind="text: name" ></td>
 							<td data-bind="text: phone" ></td>

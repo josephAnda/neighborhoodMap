@@ -13,19 +13,18 @@
 //  [!!]  Populate the info window with Foursquare info
 //  	  [!!]  Create temporary function to display the details of the Foursquare results and/or bind getMarkers to current
 //        info-window display method
+//  [!!]  Load google maps into div via binding (rather than talking to DOM)
 //  [  ]  Correct the initial info in the info window (or just close it initially)
-//  [  ]  Refine the New York Times search results in the info window
-//  [  ]  Run app.js through jshint
+//  [  ]  Refine the New York Times search results in the info window (or incoroporate info from another API like G-Earth)
+//  [!!]  Run app.js through jshint
 
-
+//  The function below is the callback for the google maps API script tag in index.html
 var googleSuccess = function() {
 	"use strict";
-	//  Check if map object has loaded via script tag in index.html
 	
 	//  Store commonly used constants in this object
 	var defaults = {
 
-		//$mapCanvas: $("#map-canvas")[0],  //  Reference to map-canvas div
 		lat: 37.56, //  Lattitude for Downtown San Mateo
 		lng: -122.32,  //  Longitude for Downtown San Mateo
 		
@@ -75,7 +74,6 @@ var googleSuccess = function() {
 		};
 				
 		var map = new google.maps.Map( document.getElementById('map-canvas'), mapOptions );
-		
 
 		//  Generates a map with the associated markers 
 		this.initializeMap = function( results ) {
@@ -97,8 +95,6 @@ var googleSuccess = function() {
 		this.addMarkers = function( places, map ) {
 
 			self.markers.removeAll(); 
-			//var markerLabels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-			//var labelIndex = 0;
 			
   			//  This function is courtesy of a Google Developers example for animation 
 			var toggleBounce = function( marker ) {
@@ -112,10 +108,12 @@ var googleSuccess = function() {
 
 			//  Binds the click of a marker to updating the info window's location
 			var bindClick = function ( marker, item, info ) {
+
 				marker.addListener('click', function() {
 					    toggleBounce( marker );
 					    self.updateInfoWindow( marker, item, info);
 					});
+
 			};
 
 			//  Creates map markers based on associated user query
@@ -125,7 +123,6 @@ var googleSuccess = function() {
 				var marker = new google.maps.Marker({
 	    				position: {lat: item.lat, lng: item.lng},
 	    				
-	    				//label: markerLabels[labelIndex++ % markerLabels.length],
 	    				animation: google.maps.Animation.DROP,
 	    				map: map
 	  				});
@@ -137,22 +134,24 @@ var googleSuccess = function() {
 	  				console.log(item.marker, item.infoWindow );
 	  				bindClick( marker, item, self.infoWindow() ) ;
   					self.markers.push(item.marker);
+
 			});
+
 		};
 
 		//  Updates the info window to ensure only one is open at a time and displays the correct info
 		this.updateInfoWindow = function( marker, item, info ) {
 			
+
 			self.getWiki( item );
 			self.getNYTimes( item );
-			
-			info.open(map, marker);
 			self.getFourSquare( item );
+			info.open(map, marker);
 		};
 
 		//  Compares query with 'results' observable and initializes a map w/out AJAX request
 		this.filter = function() {
-			self.infoWindow().close();
+			self.infoWindow.close();
 			//  Pushes place to 'results' array if the query is contained inside of the place's name
 			$.each( self.results(), function( index, item ) {
 				item.marker.visible = false;
@@ -207,7 +206,6 @@ var googleSuccess = function() {
 				//  Populates 'results' array with venue information stored in 'Place' prototype 
 				self.results.removeAll();  
 				self.infoVisible.removeAll(); 
-				//  TODO [!!] Check if undefined
 				
 			
 				$.each( places, function( index, item ) {
@@ -232,6 +230,7 @@ var googleSuccess = function() {
 		};
 
 		this.getFourSquare = function( spot ) { 
+
 			if ( spot.name === "" || spot.name === null) { return false; } //  Catch the empty string
 			$.getJSON("https://api.foursquare.com/v2/venues/search?client_id=DFMQLSBHUH2LQAQ3DQYSNSAR3TYCNHQJ3DEIHVKSMK0KBGPJ&client_secret=3J5U50Y3HOGLN3DJDHROLSZB4FBHEZCNW1P3VWHANK4KRNYO&v=20130815&ll=" + 
 			defaults.lat + "," + defaults.lng + "&query=" + spot.name, function( data ) {
@@ -250,15 +249,7 @@ var googleSuccess = function() {
 								pluralName: "Misc"
 							};
 						}
-						//console.log( "This is the number" + " " + index + " item in the array/object containing the FourSquare results:" + item );  //  Test . . . . 
-						//console.log("Item categories returns " + item.categories[0].pluralName);
-						//var place = new defaults.Place(item.name, item.location.lat, item.location.lng, item.contact.phone, item.url, item.categories[0].pluralName);
-						//self.results.push(place);
-					
 				});
-			
-			//console.log(self.results());
-			//self.initializeMap(self.results());
 			})
 			.error(function() { alert("error"); });  //  Experimental error handler
 			return false;   //  To prevent the default action of the page refreshing 
@@ -266,8 +257,9 @@ var googleSuccess = function() {
 
 		//  AJAX request to New York Times website 
 		this.getNYTimes = function ( spot ) {
+
 			var key = "&api-key=6b539ed4808bc69e6e974a036e2de9f2:1:72423609";
-	    	var nytimesApiUrl = "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + spot.name + key;
+	    	var nytimesApiUrl = "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + spot.name + '&fq=news_desk:("Market Place" "Business" "Retail" "Small Business")' + key;
 	    	$.getJSON( nytimesApiUrl  , function( data ) {
 	    		var articles = data.response.docs;
 	    		var tags = [];
@@ -282,7 +274,6 @@ var googleSuccess = function() {
                 	"</a>" + "<p>" + article.lead_paragraph +"</p>" + "</li>";
 	    			tags.push( elem );
 	    			spot.nyt = elem;
-                	//$nytElem.append(tags[index]);
             	});
 
             	self.nytData(tags[0]);
@@ -342,32 +333,37 @@ var googleSuccess = function() {
 		this.addDefaultMarkers = function ( defaults ) {
 			self.initializeMap( defaults );
 
+
+
 		};
 
 		//  Populates list upon initial rendering.  self.results() is bound to the list items via knockout
 		this.addDefaultList = function ( defaults ) {
 				$.each( defaults, function( index, item ) {
-					self.results.push( item );
+					
+					
 					self.visibleEntries.push( item.name );
+					self.results.push( item );  //  <---This line seems to be where the infoWindow is getting pre-loaded
 					//console.log("This item's 'visible' property is " + item.visible); //Add visibility attribute to defaults
 					console.log("The number " + index + " entry in the visibleEntries array is " + self.visibleEntries()[index]);
+
 				});
-				self.infoWindow().close();  //  [  ]  Figure out why this doesn't work
+				self.infoWindow.close();  //  This has the side-effect of eliminating list-entires.
+
+				//self.infoWindow.close();  //  [  ]  Figure out why this doesn't work
 				console.log( self.results() );
 			};
     }
 
-    //  Open up the map at the default location and zoom
+    //  Initialize JSON locations, ViewModel bindings, markers, and list view
     var render = (function() {
     	var hood = new NeighborhoodViewModel();
     	var	myData = JSON.parse(defaultPlaces);
     	ko.applyBindings( hood ); 
 	    hood.addDefaultMarkers(myData);  //  Adds markers
-    	hood.addDefaultList(myData);  //  Adds list
-    	
+    	hood.addDefaultList(myData);  //  Adds list 	
     })();
-   
-   
 };
 
+//  If for some reason googleSuccess() is unsuccessful
 var googleError = function() { alert("It seems Google Maps has failed to load (Try checking internet connection and/or script url)"); };

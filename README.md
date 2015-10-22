@@ -1,7 +1,13 @@
 Neighborhood Mapper V.1.3.0 by Joseph Anda
 
+*Questions*
+
+Can you recommend a method to refine my New York Times information *or* a different API source that doesn't involve
+OAuth?  Thanks!
+
 *New Notes to Grader and Notable changes*
 
+-Please view the master branch of my github project, *not* the gh-pages branch (it is failing to update correctly)
 -(Please view my checklist commented out at the beginning of app.js for a detailed idea of what I have fixed and implemented since the last version)
 -The last reviewer said "Your app is almost completely responsive. In the Google Nexus 5 view, the info window can be cut off at the top at times. An easy solution to this would be to set a max-height attribute to the info window and add an overflow-y:scroll."  In response, I added a div with max-height and overflow properties for the info window. 
 

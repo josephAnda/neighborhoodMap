@@ -46,7 +46,6 @@ var googleSuccess = function() {
 	//  Holds ViewModel functionality
 	function NeighborhoodViewModel() {
 		var self = this;  //  Allows 'this' to be used within nested scopes
-		
 		self.place = ko.observable("");  //  User query in the search bar 
 		self.results = ko.observableArray();  //  Stores the 'place' objects
 		self.markers = ko.observableArray();  //  Stores markers
@@ -66,7 +65,6 @@ var googleSuccess = function() {
 	    					'<p id="subheader">New York Times Snippet:</p>' +
 	    					'<div id="nyt-info"></div>' + '</div>'
 	  						});
-
 		var tracker = 0;
 		var counter = 0;
 		var mapOptions = {
@@ -123,7 +121,6 @@ var googleSuccess = function() {
 			$.each( places, function ( index, item ) {
 				var marker = new google.maps.Marker({
 	    				position: {lat: item.lat, lng: item.lng},
-	    				
 	    				animation: google.maps.Animation.DROP,
 	    				map: map
 	  				});
@@ -135,14 +132,11 @@ var googleSuccess = function() {
 	  				console.log(item.marker, item.infoWindow );
 	  				bindClick( marker, item, infoWindow ) ;
   					self.markers.push(item.marker);
-
 			});
-
 		};
 
 		//  Updates the info window to ensure only one is open at a time and displays the correct info
 		this.updateInfoWindow = function( marker, item ) {
-			
 			self.getWiki( item );
 			self.getNYTimes( item );
 			self.getFourSquare( item );
@@ -157,7 +151,6 @@ var googleSuccess = function() {
 				//alert(self.results().length);
 				//alert("updateINfoWindow has been called . . . " + counter); 
 			}
-			
 		};
 
 		//  Compares query with 'results' observable and initializes a map w/out AJAX request
@@ -218,7 +211,6 @@ var googleSuccess = function() {
 				self.results.removeAll();  
 				self.infoVisible.removeAll(); 
 				
-			
 				$.each( places, function( index, item ) {
 					
 						if (item.categories[0] === undefined) { 
@@ -230,10 +222,7 @@ var googleSuccess = function() {
 						console.log("Item categories returns " + item.categories[0].pluralName);
 						var place = new defaults.Place(item.name, item.location.lat, item.location.lng, item.contact.phone, item.url, item.categories[0].pluralName);
 						self.results.push(place);
-					
 				});
-				
-			//console.log(self.results());
 			self.initializeMap(self.results());
 			})
 			.error(function() { alert("error"); });  //  Experimental error handler
@@ -241,7 +230,6 @@ var googleSuccess = function() {
 		};
 
 		this.getFourSquare = function( spot ) { 
-
 			if ( spot.name === "" || spot.name === null) { return false; } //  Catch the empty string
 			$.getJSON("https://api.foursquare.com/v2/venues/search?client_id=DFMQLSBHUH2LQAQ3DQYSNSAR3TYCNHQJ3DEIHVKSMK0KBGPJ&client_secret=3J5U50Y3HOGLN3DJDHROLSZB4FBHEZCNW1P3VWHANK4KRNYO&v=20130815&ll=" + 
 			defaults.lat + "," + defaults.lng + "&query=" + spot.name, function( data ) {
@@ -251,10 +239,8 @@ var googleSuccess = function() {
 				var $locationDiv = $("#formattedAddress");
 				var $venueTypeDiv = $("#venueType");
 				$locationDiv.html(data.response.venues[0].location.formattedAddress[0]);
-				
 				$venueTypeDiv.html(data.response.venues[0].categories[0].name);
 				$.each( places, function( index, item ) {
-						
 						if (item.categories[0] === undefined) { 
 							item.categories[0] = {
 								pluralName: "Misc"
@@ -268,7 +254,6 @@ var googleSuccess = function() {
 
 		//  AJAX request to New York Times website 
 		this.getNYTimes = function ( spot ) {
-
 			var key = "&api-key=6b539ed4808bc69e6e974a036e2de9f2:1:72423609";
 	    	var nytimesApiUrl = "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + spot.name + '&fq=news_desk:("Market Place" "Business" "Retail" "Small Business")' + key;
 	    	$.getJSON( nytimesApiUrl  , function( data ) {
@@ -288,7 +273,6 @@ var googleSuccess = function() {
             	});
 
             	self.nytData(tags[0]);
-            	
             	$nytDiv.html(self.nytData());
             	console.log(tags);
             	console.log(data);
@@ -343,26 +327,15 @@ var googleSuccess = function() {
 		//  Test function below to add default markers to database and map
 		this.addDefaultMarkers = function ( defaults ) {
 			self.initializeMap( defaults );
-
-
-
 		};
 
 		//  Populates list upon initial rendering.  self.results() is bound to the list items via knockout
 		this.addDefaultList = function ( defaults ) {
 				$.each( defaults, function( index, item ) {
-					
-					
 					self.visibleEntries.push( item.name );
-					self.results.push( item );  //  <---This line seems to be where the infoWindow is getting pre-loaded
-					//console.log("This item's 'visible' property is " + item.visible); //Add visibility attribute to defaults
+					self.results.push( item );  
 					console.log("The number " + index + " entry in the visibleEntries array is " + self.visibleEntries()[index]);
-
 				});
-				//infoWindow.close();  //  This has the side-effect of eliminating list-entires.
-
-				//infoWindow.close();  //  [  ]  Figure out why this doesn't work
-				//console.log( self.results() );
 			};
     }
 

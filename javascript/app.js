@@ -14,7 +14,7 @@
 //  	  [!!]  Create temporary function to display the details of the Foursquare results and/or bind getMarkers to current
 //        info-window display method
 //  [!!]  Load google maps into div via binding (rather than talking to DOM)
-//  [  ]  Correct the initial info in the info window (or just close it initially)
+//  [!!]  Correct the initial info in the info window (or just close it initially)
 //  [  ]  Refine the New York Times search results in the info window (or incoroporate info from another API like G-Earth)
 //  [!!]  Run app.js through jshint
 
@@ -57,7 +57,7 @@ var googleSuccess = function() {
 		self.visibleEntries = ko.observableArray();  //  Controls the state of the list view
 		self.wikiData = ko.observable("Click a location in the list for more information!");  //  This changes to display the currently selected venue's wiki data
 		self.nytData = ko.observable("null");  //  This changes to show the currently selected venue's Times data
-		self.infoWindow = ko.observable(new google.maps.InfoWindow({
+		var infoWindow = new google.maps.InfoWindow({
 	    					content: '<div id="infowindow">' + '<p id="header"></p>' + 
 	    					'<p id="formattedAddress"></p>' +
 	    					'<p id="venueType"></p>' +
@@ -65,9 +65,10 @@ var googleSuccess = function() {
 	    					'<div id="wikipedia-info"></div>' + 
 	    					'<p id="subheader">New York Times Snippet:</p>' +
 	    					'<div id="nyt-info"></div>' + '</div>'
-	  						}));
+	  						});
 
 		var tracker = 0;
+		var counter = 0;
 		var mapOptions = {
 			center: new google.maps.LatLng(defaults.lat, defaults.lng),
 			zoom: 13
@@ -130,9 +131,9 @@ var googleSuccess = function() {
 	  				//  Store marker in 'marker' attribute
 	  				item.marker = marker;
 	  				//  Store info window in 'infoWindow' attribute
-	  				item.infoWindow = self.infoWindow();
+	  				item.infoWindow = infoWindow;
 	  				console.log(item.marker, item.infoWindow );
-	  				bindClick( marker, item, self.infoWindow() ) ;
+	  				bindClick( marker, item, infoWindow ) ;
   					self.markers.push(item.marker);
 
 			});
@@ -140,18 +141,28 @@ var googleSuccess = function() {
 		};
 
 		//  Updates the info window to ensure only one is open at a time and displays the correct info
-		this.updateInfoWindow = function( marker, item, info ) {
+		this.updateInfoWindow = function( marker, item ) {
 			
-
 			self.getWiki( item );
 			self.getNYTimes( item );
 			self.getFourSquare( item );
-			info.open(map, marker);
+			/*  Below is a primitive solution.  When self.results() has a place object pushed to it,
+			It seems to be opening the info window (without this function having been triggered
+			by a click event.), but I can tell through prior tests that this function (updateInfoWindow)
+			is being called every time I push a place to self.results(). I applied the 'if' statement below to counteract 
+			this bug, but it's a band-aid.  Please advise. 
+			*/ 
+			if (++counter > self.results().length) { 
+				infoWindow.open(map, marker);
+				//alert(self.results().length);
+				//alert("updateINfoWindow has been called . . . " + counter); 
+			}
+			
 		};
 
 		//  Compares query with 'results' observable and initializes a map w/out AJAX request
 		this.filter = function() {
-			self.infoWindow.close();
+			infoWindow.close();
 			//  Pushes place to 'results' array if the query is contained inside of the place's name
 			$.each( self.results(), function( index, item ) {
 				item.marker.visible = false;
@@ -348,10 +359,10 @@ var googleSuccess = function() {
 					console.log("The number " + index + " entry in the visibleEntries array is " + self.visibleEntries()[index]);
 
 				});
-				self.infoWindow.close();  //  This has the side-effect of eliminating list-entires.
+				//infoWindow.close();  //  This has the side-effect of eliminating list-entires.
 
-				//self.infoWindow.close();  //  [  ]  Figure out why this doesn't work
-				console.log( self.results() );
+				//infoWindow.close();  //  [  ]  Figure out why this doesn't work
+				//console.log( self.results() );
 			};
     }
 

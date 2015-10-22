@@ -2,16 +2,28 @@ Neighborhood Mapper V.1.3.0 by Joseph Anda
 
 QUESTIONS:
 
+One thing is still buggy:  The info window loads up initially with mismatched information, despite my calls to infoWindow.close() upon initial rendering.  *Please* help me fix this.  I know this is an issue and have racked my brain for hours trying to understand why the close() function doesn't seem to keep my infoWindow from showing up.  From what I can understand, it should *only* show up in response to a click event.  But it shows up when I first load the page.  I have a strong feeling this bug is enough to keep my project from meeting specifications, so help in regards to this would be appreciated.
 
 
 *New Notes to Grader and Notable changes*
 
+-(Please view my checklist commented out at the beginning of app.js for a detailed idea of what I have fixed and implemented since the last version)
 -The last reviewer said "Your app is almost completely responsive. In the Google Nexus 5 view, the info window can be cut off at the top at times. An easy solution to this would be to set a max-height attribute to the info window and add an overflow-y:scroll."  In response, I added a div with max-height and overflow properties for the info window. 
 
-*Potential Issues*
+-The last reviewer also mentioned that I didn't have an error-handling function for my Foursquare request . . . but this is not the case (see line 231 in app.js).  This is not a very sophisticated handler, but my understanding is that it qualifies as one nonetheless.  Please tell me if this is an invalid way to handle an erroneous AJAX request.  
 
---The Last grader lamented that my maps were not loading asynchronously, which may still be a problem (but I have since
-refactored).  I hope that I am closer to a 'Meets Specifications' nonetheless!  
+-Google Maps is now loaded asynchronously 
+
+-Searching an empty search will-repopulate the list
+
+-Searching filters both the list and the markers
+
+-DOM is only referenced in AJAX requests
+
+-I refined the information displayed in the infoWindow so that it is more applicable 
+
+-I ran my code through jshint and dealt with the applicable warnings
+
 
 *Using the Mapper*
 

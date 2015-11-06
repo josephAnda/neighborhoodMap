@@ -157,7 +157,7 @@ var googleSuccess = function() {
 					console.log(item.marker);
 				}
 			});
-			self.getMarkers();  //  < -- This is is just to force FourSquare to populate the console window
+			console.log('The place observable is ' + self.place());  //  < -- This is is just to force FourSquare to populate the console window
 			//  with info that I can use to update this app.
 		};
 

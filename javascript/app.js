@@ -1,7 +1,7 @@
 
 /*  TODO:
-[  ]  Take steps to earn Nanodegree
-[  ]  Update the resume
+[!!]  Take steps to earn Nanodegree
+[!!]  Update the resume
 [  ]  Update the portfolio
 [  ]  Update frogger
 [  ]  Update neighborhood mapper:  
@@ -157,7 +157,8 @@ var googleSuccess = function() {
 					console.log(item.marker);
 				}
 			});
-			
+			self.getMarkers();  //  < -- This is is just to force FourSquare to populate the console window
+			//  with info that I can use to update this app.
 		};
 
 		//  Controls the visibility of additional information in a list entry  

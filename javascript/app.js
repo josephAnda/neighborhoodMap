@@ -1,23 +1,15 @@
-//  TODO
-//  [!!]  Make a fully responsive layout (via y-overflow, etc.)
-//  [!!]  Verify full responsive nature (and what that means)
-//  [!!]  Figure out why scroll bar isn't showing up
-//  [!!]  'Return' should default to 'filter markers'
-//  [!!]  'Filter Markers' should filter the list view
-//  [!!]  Add a method to restore the default list (if getMarkers clears list, for example)
-//  [!!]  Use jQuery only when making AJAX requests
-//        [!!]  Determine if this specification implies that you have to move jQuery within getWiki to AJAX request itself 
-//  [!!]  Add error handling for the Foursquare request
-//  [!!]  Load Google Maps Asynchronously 
-//  [!!]  Fix how the info window loads up initially
-//  [!!]  Populate the info window with Foursquare info
-//  	  [!!]  Create temporary function to display the details of the Foursquare results and/or bind getMarkers to current
-//        info-window display method
-//  [!!]  Load google maps into div via binding (rather than talking to DOM)
-//  [!!]  Correct the initial info in the info window (or just close it initially)
-//  [  ]  Refine the New York Times search results in the info window (or incoroporate info from another API like G-Earth)
-//  [!!]  Run app.js through jshint
 
+/*  TODO:
+[  ]  Take steps to earn Nanodegree
+[  ]  Update the resume
+[  ]  Update the portfolio
+[  ]  Update frogger
+[  ]  Update neighborhood mapper:  
+	[  ]  Consider making filter-as-you-type functionality?  
+	[  ]  Add more locations
+	[  ]  Make the menu a little prettier
+	[  ]  Note the last reviewers suggestions 
+*/
 //  The function below is the callback for the google maps API script tag in index.html
 var googleSuccess = function() {
 	"use strict";
@@ -49,7 +41,6 @@ var googleSuccess = function() {
 		self.place = ko.observable("");  //  User query in the search bar 
 		self.results = ko.observableArray();  //  Stores the 'place' objects
 		self.markers = ko.observableArray();  //  Stores markers
-		//  Observable array for checked categories
 		self.categories = ko.observableArray(["Coffee Shops", "Salons / Barber Shops", "Pizza Places", "Food Courts", "Chinese Restaurants"]); 
 		self.tests = ko.observableArray();  //  Never used, but may be accessed in later versions 
 		self.infoVisible = ko.observableArray();  //  Determines whether or not the list view shows extra AJAX info
@@ -112,7 +103,6 @@ var googleSuccess = function() {
 					    toggleBounce( marker );
 					    self.updateInfoWindow( marker, item, info);
 					});
-
 			};
 
 			//  Creates map markers based on associated user query
@@ -140,16 +130,9 @@ var googleSuccess = function() {
 			self.getWiki( item );
 			self.getNYTimes( item );
 			self.getFourSquare( item );
-			/*  Below is a primitive solution.  When self.results() has a place object pushed to it,
-			It seems to be opening the info window (without this function having been triggered
-			by a click event.), but I can tell through prior tests that this function (updateInfoWindow)
-			is being called every time I push a place to self.results(). I applied the 'if' statement below to counteract 
-			this bug, but it's a band-aid.  Please advise. 
-			*/ 
+		
 			if (++counter > self.results().length) { 
 				infoWindow.open(map, marker);
-				//alert(self.results().length);
-				//alert("updateINfoWindow has been called . . . " + counter); 
 			}
 		};
 
@@ -218,8 +201,6 @@ var googleSuccess = function() {
 								pluralName: "Misc"
 							};
 						}
-		
-						console.log("Item categories returns " + item.categories[0].pluralName);
 						var place = new defaults.Place(item.name, item.location.lat, item.location.lng, item.contact.phone, item.url, item.categories[0].pluralName);
 						self.results.push(place);
 				});
@@ -274,9 +255,6 @@ var googleSuccess = function() {
 
             	self.nytData(tags[0]);
             	$nytDiv.html(self.nytData());
-            	console.log(tags);
-            	console.log(data);
-            	console.log("Here is nytData: " + self.nytData());
 	    	}).error(function(){
 	        	console.log('New York Times Articles Could Not Be Loaded');
 	        });

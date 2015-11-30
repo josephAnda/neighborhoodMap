@@ -14,6 +14,6 @@ Neighborhood Mapper V.2.0.0 by Joseph Anda
 
 This project is intended to showcase a few major front-end development-related skills:
 
-1)  Using organizational libraries (in this case, knockout and jQuery)
+1)  Using organizational libraries (in this case, Knockout.js and jQuery)
 2)  Applying the MVVM paradigm for separation of concerns
 3)  Utilizing AJAX reqeusts to relay third-party info to the user

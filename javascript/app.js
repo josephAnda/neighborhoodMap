@@ -3,7 +3,9 @@
 [!!]  Take steps to earn Nanodegree
 [!!]  Update the resume
 [  ]  Update the portfolio
+	[  ]  How should we change the portfolio?  Figure the steps.  
 [  ]  Update frogger
+	[  ]  And how exactly do we make Frogger more impressive? 
 [  ]  Update neighborhood mapper:  
 	[  ]  Consider making filter-as-you-type functionality?  
 	[  ]  Add more locations
@@ -60,7 +62,7 @@ var googleSuccess = function() {
 		var counter = 0;
 		var mapOptions = {
 			center: new google.maps.LatLng(defaults.lat, defaults.lng),
-			zoom: 13
+			zoom: 11
 		};
 				
 		var map = new google.maps.Map( document.getElementById('map-canvas'), mapOptions );

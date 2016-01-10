@@ -6,61 +6,64 @@
 		<title>Neighborhood Mapper</title>
 		<link rel="stylesheet" href="css/bootstrap.min.css">
 		<link rel="stylesheet" href="css/style.css">
+		<link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
 	</head>
 	<body>
-		<div class="row">
-			<div class="col-md-6 col-md-offset-3"><h2>Neighborhood Mapper</h2></div>
-		</div>
-		<div class="row">
-			<div class="col-md-6 container">
-				<nav class="navbar navbar-default">
-					<form name="mapForm">
-						<div id="location">
-							Type in a query and <b>Click 'get markers'</b> (or hit enter) to search for new venues.  <b>Filter Markers</b> will leave only map markers that match the query.  <input class="field" type="text" name="place" data-bind="textInput: place, event: { keypress: console.log('filterList') }"><br>
-							<input type="submit" value ="Filter Markers" data-bind="click: filter">
-							<input type="submit" value="Reset"> <br>
-						<!--  [!!]  Use the search bar for list filtering 
-							<span>The <b>list view filter</b> below will filter the show/hide list items by category (checking none hides all results)</span><br>
-							<input type="checkbox" name="spot1" value="Coffee Shops" data-bind="checked:categories" > Coffee Shops
-							<input type="checkbox" name="spot2" value="Salons / Barber Shops" data-bind="checked:categories"> Salons / Barber Shops
-							<input type="checkbox" name="spot3" value="Pizza Places" data-bind="checked:categories"> Pizza Places
-							<input type="checkbox" name="spot4" value="Food Courts" data-bind="checked:categories"> Food Courts<br>
-							<input type="checkbox" name="spot5" value="Chinese Restaurants" data-bind="checked:categories">Chinese Restaurants<br>
-						-->
+		<article id="webApp">
+			<div class="row">
+				<div class="col-md-6 col-md-offset-3"><h2>Neighborhood Mapper</h2></div>
+			</div>
+			<div class="row">
+				<div class="col-md-6 container">
+					<nav class="navbar navbar-default">
+						<form name="mapForm">
+							<div class="col-md-6" id="location">
+								Type in a query and <b>Click 'get markers'</b> (or hit enter) to search for new venues.  <b>Filter Markers</b> will leave only map markers that match the query.  <input class="field" type="text" name="place" data-bind="textInput: place, event: { keypress: console.log('filterList') }"><br>
+								<input type="submit" value ="Filter Markers" data-bind="click: filter">
+								<input type="submit" value="Reset"> <br>
+							<!--  [!!]  Use the search bar for list filtering 
+								<span>The <b>list view filter</b> below will filter the show/hide list items by category (checking none hides all results)</span><br>
+								<input type="checkbox" name="spot1" value="Coffee Shops" data-bind="checked:categories" > Coffee Shops
+								<input type="checkbox" name="spot2" value="Salons / Barber Shops" data-bind="checked:categories"> Salons / Barber Shops
+								<input type="checkbox" name="spot3" value="Pizza Places" data-bind="checked:categories"> Pizza Places
+								<input type="checkbox" name="spot4" value="Food Courts" data-bind="checked:categories"> Food Courts<br>
+								<input type="checkbox" name="spot5" value="Chinese Restaurants" data-bind="checked:categories">Chinese Restaurants<br>
+							-->
+								
+							</div>
 							
-						</div>
-						
-					</form>
-				</nav>
+						</form>
+					</nav>
+				</div>
+				<div class="col-md-6" id="place_info" style="overflow: auto; height:100%; width:45%; border:1px solid #ccc;">
+					<table>
+						<thead>
+							<tr>
+								<td>Location</td>
+								<td>Phone Number</td>
+							</tr>
+						</thead>
+						<tbody data-bind="foreach: results">
+							<tr data-bind="visible: $parent.visibleEntries.indexOf(name) !== -1, click: $parent.updateInfoWindow($data.marker, $data )">
+								<td class="table_item" data-bind="text: name" ></td>
+								<td data-bind="text: phone" ></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
-			<div class="col-md-6" style="overflow: auto; height:175px; width:500px; border:1px solid #ccc;">
-				<table>
-					<thead>
-						<tr>
-							<td>Location</td>
-							<td>Phone Number</td>
-						</tr>
-					</thead>
-					<tbody data-bind="foreach: results">
-						<tr data-bind="visible: $parent.visibleEntries.indexOf(name) !== -1, click: $parent.updateInfoWindow($data.marker, $data )">
-							<td class="table_item" data-bind="text: name" ></td>
-							<td data-bind="text: phone" ></td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-		<div class="row" id="map-row">
+			<div class="row" id="map-row">
 
-			<div class="col-md-12" id="map-canvas" style="width: 100%; height: 100%"></div>
-		</div>
-		<p>Version:  2.0</p>
-		<script src="libraries/jquery.js"></script>	
-		<script src="libraries/knockout-3.3.0 .js"></script>
-		<script async  
-			src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDMBshK9P3JbIcC-prwrJoeV36aYqVd4zU&callback=googleSuccess" onerror="googleError()" type="text/javascript">
-		</script>
-		<script src="javascript/defaults.json"></script>
-		<script src="javascript/app.js"></script>
+				<div class="col-md-12" id="map-canvas" style="width: 95%; height: 100%"></div>
+			</div>
+			<p>Version:  2.0</p>
+			<script src="libraries/jquery.js"></script>	
+			<script src="libraries/knockout-3.3.0 .js"></script>
+			<script async  
+				src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDMBshK9P3JbIcC-prwrJoeV36aYqVd4zU&callback=googleSuccess" onerror="googleError()" type="text/javascript">
+			</script>
+			<script src="javascript/defaults.json"></script>
+			<script src="javascript/app.js"></script>
+		</article>
 	<body>
 </html>

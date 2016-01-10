@@ -1,13 +1,21 @@
+* {
+	font-family: 'Roboto Slab', serif;
+}
+
 html { 
 	height: 100%; 
 }
 
 body { 
 	height: 100%; 
-	margin: 4% 4%; 
+	margin: 7% 7%; 
 	padding: 0; 
+	
 }
-
+.navbar {
+	text-align: left;
+	margin-left: 5%;
+}
 #map-row { 
 	height: 700px; 
 	padding-top: 100px;
@@ -23,14 +31,23 @@ h2 {
 #address, #place {
 	display: block;
 }
-
+#location {
+	
+	margin: 4%;
+}
+#place_info {
+	margin-left: 5%;
+}
+#webApp {
+	border: 5px solid black;
+}
 .container {
-    width: 500px;
-    clear: both;
+    width: 45%;
+    
 }
 .container input.field {
     width: 80%;
-    clear: both;
+    clear: left;
 }
 
 thead, p#header {

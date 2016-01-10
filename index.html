@@ -43,7 +43,7 @@
 					</thead>
 					<tbody data-bind="foreach: results">
 						<tr data-bind="visible: $parent.visibleEntries.indexOf(name) !== -1, click: $parent.updateInfoWindow($data.marker, $data )">
-							<td data-bind="text: name" ></td>
+							<td class="table_item" data-bind="text: name" ></td>
 							<td data-bind="text: phone" ></td>
 						</tr>
 					</tbody>

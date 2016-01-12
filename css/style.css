@@ -37,13 +37,16 @@ h2 {
 }
 #place_info {
 	margin-left: 5%;
+	width: 45%;
+}
+#place_info table {
+	text-align: center;
 }
 #webApp {
 	border: 5px solid black;
 }
-.container {
-    width: 45%;
-    
+#queryContainer {
+	width: 45%;
 }
 .container input.field {
     width: 80%;

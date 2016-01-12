@@ -1,7 +1,11 @@
 * {
 	font-family: 'Roboto Slab', serif;
 }
-
+@media screen and (max-width: 991px) {
+    #place_info, #queryContainer {
+        float: left;
+    }
+}
 html { 
 	height: 100%; 
 }
@@ -12,10 +16,15 @@ body {
 	padding: 0; 
 	
 }
+input.field {
+	max-width: 80%; 
+}
 .navbar {
 	text-align: left;
 	margin-left: 5%;
 }
+
+
 #map-row { 
 	height: 700px; 
 	padding-top: 100px;
@@ -36,14 +45,17 @@ h2 {
 	margin: 4%;
 }
 #place_info {
-	margin-left: 5%;
+	margin-left: 4%;
+	max-width: 45%;
 }
+
+
+
 #webApp {
 	border: 5px solid black;
 }
-.container {
-    width: 45%;
-    
+#queryContainer {
+	max-width: 45%;
 }
 .container input.field {
     width: 80%;
